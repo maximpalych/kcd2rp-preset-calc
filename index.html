@@ -199,14 +199,16 @@
       'Acidum chloridum':'Соляная кислота','ancient yew staves':'Древние тисовые заготовки','antlers':'Оленьи рога','boar tusks':'Кабаньи клыки','Broken axe':'Сломанный топор','coal':'Уголь','Coloured gold':'Цветное золото','copper ore':'Медная руда','Dogfish skin':'Кожа морской собаки','Dragon claw':'Коготь дракона','Enamel powder':'Эмалевая пудра','Exotic wood':'Экзотическая древесина','fine silver':'Чистое серебро','flax':'Лён','gold ore':'Золотая руда','Hare pelt':'Заячья шкура','hemp fibre':'Конопляное волокно','hides':'Шкуры','iron ore':'Железная руда','Jasper':'Яшма','logs':'Брёвна','meteoric iron':'Метеоритное железо','nettles':'Крапива','owl feathers':'Совиные перья','pine resin':'Сосновая смола','pure silver nuggets':'Самородки чистого серебра','river pearls':'Речной жемчуг','Rock Pitch':'Каменная смола','royal antlers':'Королевские рога','saltpetre':'Селитра','silver ore':'Серебряная руда','sulphur':'Сера','Tincal':'Тинкал','Weapon stub':'Оружейная заготовка','white wolf pelts':'Шкуры белого волка','wolf pelts':'Волчьи шкуры'
     };
     const $=id=>document.getElementById(id);
-    let lang=localStorage.getItem('kcd2-ui-lang')==='en'?'en':'ru';
+    function storageGet(key){try{return localStorage.getItem(key)}catch(e){return null}}
+    function storageSet(key,value){try{localStorage.setItem(key,value)}catch(e){}}
+    let lang=storageGet('kcd2-ui-lang')==='en'?'en':'ru';
     let db=JSON.parse($('recipeData').textContent);
     let recipes=[], recipeMap=new Map(), componentOrder=[];
     let state={version:1,name:'Новый комплект',items:[],resources:{}};
     let filter={profession:'Все',search:'',showAll:false};
     let toastTimer,dbMode='builtin';
 
-    function t(key,vars={}){let text=I18N[lang][key]??key;for(const [name,value] of Object.entries(vars))text=text.replaceAll(`{${name}}`,value);return text}
+    function t(key,vars={}){let text=I18N[lang][key]??key;for(const [name,value] of Object.entries(vars))text=text.split(`{${name}}`).join(value);return text}
     function professionTitle(name){return PROF_LABEL[lang][name]||name}
     function itemTitle(recipe){return lang==='ru'?(recipe.display_item_ru||recipe.display_item):recipe.display_item}
     function ingredientTitle(ingredient){return ingredient.recipe_key&&recipeMap.has(ingredient.recipe_key)?itemTitle(recipeMap.get(ingredient.recipe_key)):resourceTitle(ingredient.name)}
@@ -288,7 +290,7 @@
       $('tabs').innerHTML=PROFESSIONS.map(p=>`<button class="tab ${filter.profession===p?'active':''}" data-profession="${esc(p)}">${esc(professionTitle(p))}</button>`).join('');
     }
     function normalizeSearch(value){
-      return String(value||'').toLocaleLowerCase(lang==='ru'?'ru':'en').replaceAll('ё','е').trim();
+      return String(value||'').toLocaleLowerCase(lang==='ru'?'ru':'en').replace(/ё/g,'е').trim();
     }
     function matchesSearch(haystack,query){
       const hay=normalizeSearch(haystack);
@@ -362,7 +364,7 @@
     $('resources').addEventListener('change',e=>{const name=e.target.dataset.owned??e.target.dataset.price;if(name===undefined)return;state.resources[name]=state.resources[name]||{};if(e.target.dataset.owned!==undefined)state.resources[name].owned=cleanNumber(e.target.value);else state.resources[name].price=cleanNumber(e.target.value);render()});
     $('setName').addEventListener('input',e=>{state.name=e.target.value;saveLocal()});
     $('showAll').addEventListener('change',e=>{filter.showAll=e.target.checked;render()});
-    $('langBtn').addEventListener('click',()=>{const oldDefault=state.name===I18N[lang].newSet;lang=lang==='ru'?'en':'ru';localStorage.setItem('kcd2-ui-lang',lang);if(oldDefault)state.name=t('newSet');prepareDb(db)});
+    $('langBtn').addEventListener('click',()=>{const oldDefault=state.name===I18N[lang].newSet;lang=lang==='ru'?'en':'ru';storageSet('kcd2-ui-lang',lang);if(oldDefault)state.name=t('newSet');prepareDb(db)});
     $('exportBtn').addEventListener('click',exportSet);$('copyBtn').addEventListener('click',()=>copyJson().catch(()=>toast(t('clipboardUnavailable'))));
     $('importBtn').addEventListener('click',()=>$('importFile').click());
     $('importFile').addEventListener('change',e=>{if(e.target.files[0])importSet(e.target.files[0]).catch(err=>alert(err.message));e.target.value=''});
