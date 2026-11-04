@@ -97,10 +97,16 @@
     .craft-level{display:inline-flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid #9b7b4d;background:#fff0cc;color:#493420;font-size:11px;font-weight:bold}
     .craft-level strong{display:grid;place-items:center;min-width:22px;height:22px;padding:0 5px;background:#682622;color:#fff0c7;font-size:12px}
     .craft-levels.empty{display:none}
+    .estimate-section{margin-top:14px}
+    .estimate-section.empty{display:none}
+    .estimate-heading{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin:0 2px 7px}
+    .estimate-heading h3{margin:0;color:#60241f;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    .estimate-heading p{margin:0;max-width:60%;color:#786448;font-size:10px;line-height:1.4;text-align:right}
     .resource-toolbar{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:11px 1px;font-size:11px;color:#6e5b41}
     .check{display:flex;align-items:center;gap:7px;cursor:pointer}
     .check input{accent-color:var(--wine)}
     .resource-wrap{max-height:calc(100vh - 397px);min-height:390px;overflow:auto;border:1px solid #9b8058;background:#ead8b4;scrollbar-color:#8f7042 #d5c095;scrollbar-width:thin;box-shadow:inset 0 0 18px #684a2020}
+    .component-wrap{min-height:0;max-height:260px}
     table{border-collapse:collapse;width:100%;font-size:12px}
     th{position:sticky;top:0;z-index:2;background:#5b211e;color:#f3dca8;text-transform:uppercase;letter-spacing:.065em;font-size:9px;padding:10px 6px;border-bottom:2px solid #b48c47}
     td{padding:8px 6px;border-bottom:1px solid #c1a878;text-align:right;background:#f4e6c5;color:#3e3022}
@@ -109,6 +115,7 @@
     td:first-child,th:first-child{text-align:left}
     .resource-name{color:#38271b;font-weight:bold;white-space:nowrap}
     .resource-original{display:block;color:#8a7658;font-size:9px;font-weight:normal;max-width:130px;overflow:hidden;text-overflow:ellipsis}
+    .resource-split{display:block;margin-top:3px;color:#7e694c;font-size:9px;font-weight:normal;line-height:1.35;white-space:normal}
     .cell-input{width:68px;border:1px solid #9b7d51;background:#fff9e8;color:#35271d;text-align:right;padding:6px 5px;outline:none}
     .summary-panel table{font-size:11px}
     .summary-panel th,.summary-panel td{padding-left:4px;padding-right:4px}
@@ -179,6 +186,17 @@
             <div class="metric"><span id="metricTotalLabel">Полная стоимость</span><strong id="metricTotal">0</strong></div>
           </div>
           <div class="craft-levels empty" id="craftLevels"></div>
+          <div class="estimate-section" id="componentsSection">
+            <div class="estimate-heading"><h3 id="componentsTitle">Промежуточные материалы</h3><p id="componentsHint">Сначала вычитаются ваши запасы, и только недостающее раскладывается на сырьё.</p></div>
+            <div class="resource-wrap component-wrap">
+              <table>
+                <thead><tr><th id="thComponent">Материал</th><th id="thComponentNeed">Всего</th><th id="thComponentOwned">Есть</th><th id="thComponentMissing">Не хватает</th><th id="thComponentRuns">Крафты</th></tr></thead>
+                <tbody id="components"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="estimate-section">
+            <div class="estimate-heading"><h3 id="rawMaterialsTitle">Сырьё</h3><p id="rawMaterialsHint">Итог с учётом запасов промежуточных материалов.</p></div>
           <div class="resource-toolbar">
             <label class="check"><input type="checkbox" id="showAll"> <span id="showAllLabel">Показывать ненужные ресурсы</span></label>
             <span id="resourceCount"></span>
@@ -190,6 +208,7 @@
             </table>
           </div>
           <div class="warning" id="priceWarning"></div>
+          </div>
         </div>
       </section>
     </main>
@@ -214,8 +233,9 @@
       ru:{
         documentTitle:'Книга ремесленника — конструктор сетов',eyebrow:'Ремесленная книга · KCD Roleplay',pageTitle:'Конструктор снаряжения',pageSubtitle:'Соберите заказ, посчитайте сырьё и цену каждой работы.',
         loadDbBtn:'База рецептов',importBtn:'Импорт сета',exportBtn:'Экспорт сета',clearBtn:'Очистить',catalogTitle:'Каталог ремёсел',catalogHint:'Нажмите «+», чтобы добавить предмет в заказ.',searchPlaceholder:'Поиск предмета или ресурса…',builtinDb:'встроенная база',loadedDb:'загруженная база',
-        setTitle:'Ваш комплект',setHint:'Количество — сколько готовых предметов вы хотите получить.',copyBtn:'Копия JSON',copyReportBtn:'Копировать отчёт',setFootnote:'Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.',summaryTitle:'Смета мастера',summaryHint:'Заполните запасы и цены — итог обновится сразу.',
-        metricItemsLabel:'Предметов',metricCraftLabel:'Гроши за работу',metricResourcesLabel:'Ресурсы к покупке',metricTotalLabel:'Полная стоимость',showAllLabel:'Показывать ненужные ресурсы',thResource:'Ресурс',thNeed:'Нужно',thOwned:'Есть',thBuy:'Купить',thPrice:'Цена',thCost:'Сумма',
+        setTitle:'Ваш комплект',setHint:'Количество — сколько готовых предметов вы хотите получить.',copyBtn:'Копия JSON',copyReportBtn:'Копировать отчёт',setFootnote:'Партии компонентов объединяются между всеми предметами. Запасы стали, набивки и других компонентов вычитаются до расчёта сырья.',summaryTitle:'Смета мастера',summaryHint:'Укажите имеющиеся компоненты, запасы сырья и цены — итог обновится сразу.',
+        metricItemsLabel:'Предметов',metricCraftLabel:'Гроши за работу',metricResourcesLabel:'Сырьё к покупке',metricTotalLabel:'Полная стоимость',showAllLabel:'Показывать ненужные ресурсы',thResource:'Ресурс',thNeed:'Всего',thOwned:'Есть',thBuy:'Купить',thPrice:'Цена',thCost:'Сумма',
+        componentsTitle:'Промежуточные материалы',componentsHint:'Сначала вычитаются ваши запасы, и только недостающее раскладывается на сырьё.',rawMaterialsTitle:'Сырьё',rawMaterialsHint:'Итог с учётом запасов промежуточных материалов.',thComponent:'Материал',thComponentNeed:'Всего',thComponentOwned:'Есть',thComponentMissing:'Не хватает',thComponentRuns:'Крафты',forItems:'на предметы',forComponents:'на компоненты',craftOutput:'получится {n}',reportOwned:'есть',reportMissing:'не хватает',
         footerSource:'Источник: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · для альтернативных рецептов компонентов используется первый вариант из базы',newSet:'Новый комплект',emptyCatalog:'Ничего не найдено',emptySetTitle:'Комплект пока пуст',emptySetHint:'Выберите предметы в каталоге слева.',noIngredients:'без сырья',levelShort:'ур.',addTitle:'Добавить',
         willMake:'получится',fee:'плата',groschen:'гр.',resourceKinds:'видов сырья',requiredCraftLevels:'Требуемый уровень ремесла',missingPrice:'Не указана цена для {n} {word}. Итог пока неполный.',resourceOne:'ресурса',resourceMany:'ресурсов',added:'Предмет добавлен в комплект',profession:'Профессия',level:'Уровень',batchOutput:'Выход партии',craftFee:'Плата за крафт',time:'Время',type:'Тип',component:'Компонент',item:'Предмет',recipe:'Рецепт',seconds:'сек.',addToSet:'Добавить в комплект',
         exported:'Сет экспортирован',notSetFile:'Это не файл сета.',imported:'Импортировано: {n} позиций',copied:'JSON скопирован в буфер',reportCopied:'Отчёт скопирован в буфер',reportEmpty:'Сначала добавьте предметы в комплект.',reportRequirements:'Требования',reportEquipment:'Список снаряжения',reportResources:'Всего потребуется ресурсов',reportCost:'Стоимость',reportResourceCost:'Ресурсы',reportWorkbenches:'Верстаки',reportTotal:'Итого',reportForItems:'на предметы',clipboardUnavailable:'Буфер обмена недоступен',dbUpdated:'База рецептов обновлена',clearConfirm:'Очистить предметы, цены и запасы?',close:'Закрыть',switchLanguage:'Switch to English',recipesAndResources:'{recipes} рецептов · {resources} базовых ресурсов · база {date}',invalidDb:'В файле нет recipes или base_resources.',brokenDb:'Повреждён или повторяется ключ рецепта.'
@@ -223,8 +243,9 @@
       en:{
         documentTitle:'Craftsman’s Ledger — Set Builder',eyebrow:'Craftsman’s ledger · KCD Roleplay',pageTitle:'Equipment Set Builder',pageSubtitle:'Assemble an order and calculate every resource and crafting fee.',
         loadDbBtn:'Recipe database',importBtn:'Import set',exportBtn:'Export set',clearBtn:'Clear',catalogTitle:'Crafting catalogue',catalogHint:'Press “+” to add an item to the order.',searchPlaceholder:'Search items or resources…',builtinDb:'embedded database',loadedDb:'loaded database',
-        setTitle:'Your equipment set',setHint:'Quantity is the number of finished items you want.',copyBtn:'Copy JSON',copyReportBtn:'Copy report',setFootnote:'Component batches are combined across all items. For example, the total steel demand is calculated first and only then converted into recipe batches.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter your stock and prices — totals update instantly.',
-        metricItemsLabel:'Items',metricCraftLabel:'Crafting fees',metricResourcesLabel:'Resources to buy',metricTotalLabel:'Total cost',showAllLabel:'Show unused resources',thResource:'Resource',thNeed:'Needed',thOwned:'Owned',thBuy:'To buy',thPrice:'Price',thCost:'Cost',
+        setTitle:'Your equipment set',setHint:'Quantity is the number of finished items you want.',copyBtn:'Copy JSON',copyReportBtn:'Copy report',setFootnote:'Component batches are combined across all items. Stocked steel, padding, and other components are deducted before raw materials are calculated.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter component stock, raw-material stock, and prices — totals update instantly.',
+        metricItemsLabel:'Items',metricCraftLabel:'Crafting fees',metricResourcesLabel:'Raw materials to buy',metricTotalLabel:'Total cost',showAllLabel:'Show unused resources',thResource:'Resource',thNeed:'Total',thOwned:'Owned',thBuy:'To buy',thPrice:'Price',thCost:'Cost',
+        componentsTitle:'Intermediate materials',componentsHint:'Your stock is deducted first; only the shortage is expanded into raw materials.',rawMaterialsTitle:'Raw materials',rawMaterialsHint:'Totals after intermediate-material stock is applied.',thComponent:'Material',thComponentNeed:'Total',thComponentOwned:'Owned',thComponentMissing:'Shortage',thComponentRuns:'Crafts',forItems:'for items',forComponents:'for components',craftOutput:'makes {n}',reportOwned:'owned',reportMissing:'shortage',
         footerSource:'Source: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · the first database route is used for components with alternative recipes',newSet:'New equipment set',emptyCatalog:'Nothing found',emptySetTitle:'Your set is empty',emptySetHint:'Choose items from the catalogue on the left.',noIngredients:'no resources',levelShort:'lvl.',addTitle:'Add',
         willMake:'produces',fee:'fee',groschen:'gr.',resourceKinds:'resource types',requiredCraftLevels:'Required crafting levels',missingPrice:'No price entered for {n} {word}. The total is incomplete.',resourceOne:'resource',resourceMany:'resources',added:'Item added to the set',profession:'Profession',level:'Level',batchOutput:'Batch output',craftFee:'Crafting fee',time:'Time',type:'Type',component:'Component',item:'Item',recipe:'Recipe',seconds:'sec.',addToSet:'Add to set',
         exported:'Set exported',notSetFile:'This is not a set file.',imported:'Imported: {n} entries',copied:'JSON copied to clipboard',reportCopied:'Report copied to clipboard',reportEmpty:'Add items to the set first.',reportRequirements:'Requirements',reportEquipment:'Equipment list',reportResources:'Total resources required',reportCost:'Cost',reportResourceCost:'Resources',reportWorkbenches:'Workbenches',reportTotal:'Total',reportForItems:'for items',clipboardUnavailable:'Clipboard is unavailable',dbUpdated:'Recipe database updated',clearConfirm:'Clear items, prices, and stock?',close:'Close',switchLanguage:'Переключить на русский',recipesAndResources:'{recipes} recipes · {resources} base resources · database {date}',invalidDb:'The file has no recipes or base_resources.',brokenDb:'A recipe key is damaged or duplicated.'
@@ -241,7 +262,7 @@
     let recipes=[], recipeMap=new Map(), componentOrder=[];
     let state={version:1,name:'Новый комплект',items:[],resources:{}};
     let filter={profession:'Все',search:'',showAll:false};
-    let toastTimer,dbMode='builtin';
+    let toastTimer,resourceInputTimer,dbMode='builtin';
 
     function t(key,vars={}){let text=I18N[lang][key]??key;for(const [name,value] of Object.entries(vars))text=text.split(`{${name}}`).join(value);return text}
     function professionTitle(name){return PROF_LABEL[lang][name]||name}
@@ -249,7 +270,7 @@
     function ingredientTitle(ingredient){return ingredient.recipe_key&&recipeMap.has(ingredient.recipe_key)?itemTitle(recipeMap.get(ingredient.recipe_key)):resourceTitle(ingredient.name)}
     function applyLanguage(){
       document.documentElement.lang=lang;document.title=t('documentTitle');
-      const ids=['eyebrow','pageTitle','pageSubtitle','loadDbBtn','importBtn','exportBtn','clearBtn','catalogTitle','catalogHint','setTitle','setHint','copyBtn','copyReportBtn','setFootnote','summaryTitle','summaryHint','metricItemsLabel','metricCraftLabel','metricResourcesLabel','metricTotalLabel','showAllLabel','thResource','thNeed','thOwned','thBuy','thPrice','thCost'];
+      const ids=['eyebrow','pageTitle','pageSubtitle','loadDbBtn','importBtn','exportBtn','clearBtn','catalogTitle','catalogHint','setTitle','setHint','copyBtn','copyReportBtn','setFootnote','summaryTitle','summaryHint','metricItemsLabel','metricCraftLabel','metricResourcesLabel','metricTotalLabel','componentsTitle','componentsHint','rawMaterialsTitle','rawMaterialsHint','showAllLabel','thComponent','thComponentNeed','thComponentOwned','thComponentMissing','thComponentRuns','thResource','thNeed','thOwned','thBuy','thPrice','thCost'];
       ids.forEach(id=>$(id).textContent=t(id));
       $('search').placeholder=t('searchPlaceholder');$('footerSource').innerHTML=t('footerSource');$('dialogClose').title=t('close');$('dialogClose').setAttribute('aria-label',t('close'));
       $('langBtn').textContent=lang==='ru'?'EN':'RU';$('langBtn').title=t('switchLanguage');$('dbStatus').textContent=t(dbMode==='loaded'?'loadedDb':'builtinDb');
@@ -291,9 +312,11 @@
     function plural(n,one,few,many){n=Math.abs(n)%100;const n1=n%10;return n>10&&n<20?many:n1>1&&n1<5?few:n1===1?one:many}
     function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
     function resourceTitle(name){return lang==='ru'?(RU[name]||name):name}
+    function componentTitle(recipe){return itemTitle(recipe).replace(/\s*\[(?:рецепт|recipe)\s*\d+\]\s*$/i,'')}
+    function componentStateKey(key){return `component:${key}`}
 
     function calculate(){
-      const base=new Map(), demand=new Map(), componentRuns=new Map(), requiredLevels=new Map(), requiredLevelRanges=new Map(), baseBreakdown=new Map();
+      const base=new Map(), demand=new Map(), componentRuns=new Map(), componentUsage=new Map(), requiredLevels=new Map(), requiredLevelRanges=new Map(), baseBreakdown=new Map();
       let craftFee=0,totalItems=0,finalRuns=0;
       const add=(map,key,value)=>map.set(key,(map.get(key)||0)+value);
       const requireLevel=recipe=>{
@@ -318,18 +341,28 @@
       for(const key of componentOrder){
         const needed=demand.get(key)||0; if(needed<=0) continue;
         const r=recipeMap.get(key); if(!r) continue;
-        const runs=Math.ceil(needed/Math.max(1,cleanNumber(r.output_qty)||1)); componentRuns.set(key,runs);requireLevel(r);
-        craftFee+=runs*cleanNumber(r.craft_fee);
+        const saved=state.resources[componentStateKey(key)]||{},owned=cleanNumber(saved.owned),shortage=Math.max(needed-owned,0);
+        const output=Math.max(1,cleanNumber(r.output_qty)||1),runs=shortage>0?Math.ceil(shortage/output):0,made=runs*output;
+        componentUsage.set(key,{key,recipe:r,need:needed,owned,shortage,runs,made});
+        if(runs<=0)continue;
+        componentRuns.set(key,runs);requireLevel(r);craftFee+=runs*cleanNumber(r.craft_fee);
         r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs},key));
       }
       let resourceCost=0,missingPrices=0,toBuyUnits=0;
       const resources=db.base_resources.map(name=>{
         const need=base.get(name)||0; const saved=state.resources[name]||{};
         const owned=cleanNumber(saved.owned),price=cleanNumber(saved.price),buy=Math.max(need-owned,0),cost=buy*price;
+        const sources=baseBreakdown.get(name)||new Map(),direct=sources.get('direct')||0;
+        let forComponents=0;for(const [source,qty] of sources)if(source!=='direct')forComponents+=qty;
         if(buy>0&&!price) missingPrices++; resourceCost+=cost;toBuyUnits+=buy;
-        return{name,need,owned,buy,price,cost};
+        return{name,need,direct,forComponents,owned,buy,price,cost};
       });
-      return{resources,craftFee,resourceCost,total:craftFee+resourceCost,missingPrices,totalItems,finalRuns,componentRuns,componentDemand:demand,toBuyUnits,requiredLevels,requiredLevelRanges,baseBreakdown};
+      const components=componentOrder.map(key=>{
+        if(componentUsage.has(key))return componentUsage.get(key);
+        const recipe=recipeMap.get(key),owned=cleanNumber((state.resources[componentStateKey(key)]||{}).owned);
+        return{key,recipe,need:0,owned,shortage:0,runs:0,made:0};
+      });
+      return{resources,components,craftFee,resourceCost,total:craftFee+resourceCost,missingPrices,totalItems,finalRuns,componentRuns,componentDemand:demand,toBuyUnits,requiredLevels,requiredLevelRanges,baseBreakdown};
     }
 
     function renderTabs(){
@@ -364,9 +397,16 @@
       const levels=PROFESSIONS.slice(1).filter(name=>calc.requiredLevels.has(name));
       $('craftLevels').classList.toggle('empty',!levels.length);
       $('craftLevels').innerHTML=levels.length?`<span class="craft-levels-title">${t('requiredCraftLevels')}</span><div class="craft-levels-list">${levels.map(name=>`<span class="craft-level">${esc(professionTitle(name))}<strong>${fmt(calc.requiredLevels.get(name),0)}</strong></span>`).join('')}</div>`:'';
+      const visibleComponents=calc.components.filter(c=>filter.showAll||c.need>0);
+      $('componentsSection').classList.toggle('empty',!visibleComponents.length);
+      $('components').innerHTML=visibleComponents.map(c=>{
+        const original=String(c.recipe.display_item||'').replace(/\s*\[(?:рецепт|recipe)\s*\d+\]\s*$/i,'');
+        const craftDetail=c.runs?`<span class="resource-split">${t('craftOutput',{n:fmt(c.made)})}</span>`:'';
+        return `<tr><td><span class="resource-name">${esc(componentTitle(c.recipe))}</span>${lang==='ru'&&original!==componentTitle(c.recipe)?`<span class="resource-original">${esc(original)}</span>`:''}</td><td class="${c.need?'need':'zero'}">${fmt(c.need)}</td><td><input class="cell-input" type="number" min="0" step="any" data-owned="${esc(componentStateKey(c.key))}" value="${c.owned||''}" placeholder="0"></td><td class="${c.shortage?'need':'zero'}">${fmt(c.shortage)}${craftDetail}</td><td class="${c.runs?'':'zero'}">${fmt(c.runs,0)}</td></tr>`;
+      }).join('');
       const visible=calc.resources.filter(r=>filter.showAll||r.need>0);
       $('resourceCount').textContent=`${visible.filter(r=>r.need>0).length} ${t('resourceKinds')}`;
-      $('resources').innerHTML=visible.map(r=>`<tr><td><span class="resource-name">${esc(resourceTitle(r.name))}</span>${resourceTitle(r.name)!==r.name?`<span class="resource-original">${esc(r.name)}</span>`:''}</td><td class="${r.need?'need':'zero'}">${fmt(r.need)}</td><td><input class="cell-input" type="number" min="0" step="any" data-owned="${esc(r.name)}" value="${r.owned||''}" placeholder="0"></td><td class="${r.buy?'':'zero'}">${fmt(r.buy)}</td><td><input class="cell-input" type="number" min="0" step="any" data-price="${esc(r.name)}" value="${r.price||''}" placeholder="0"></td><td class="${r.cost?'cost':'zero'}">${fmt(r.cost)}</td></tr>`).join('');
+      $('resources').innerHTML=visible.map(r=>`<tr><td><span class="resource-name">${esc(resourceTitle(r.name))}</span>${resourceTitle(r.name)!==r.name?`<span class="resource-original">${esc(r.name)}</span>`:''}${r.need?`<span class="resource-split">${t('forItems')}: ${fmt(r.direct)} · ${t('forComponents')}: ${fmt(r.forComponents)}</span>`:''}</td><td class="${r.need?'need':'zero'}">${fmt(r.need)}</td><td><input class="cell-input" type="number" min="0" step="any" data-owned="${esc(r.name)}" value="${r.owned||''}" placeholder="0"></td><td class="${r.buy?'':'zero'}">${fmt(r.buy)}</td><td><input class="cell-input" type="number" min="0" step="any" data-price="${esc(r.name)}" value="${r.price||''}" placeholder="0"></td><td class="${r.cost?'cost':'zero'}">${fmt(r.cost)}</td></tr>`).join('');
       $('metricItems').textContent=fmt(calc.totalItems,0);
       $('metricCraft').textContent=`${fmt(calc.craftFee)} ${t('groschen')}`;
       $('metricResources').textContent=fmt(calc.toBuyUnits);
@@ -400,12 +440,11 @@
       const items=incoming.items.filter(x=>recipeMap.has(x.recipeKey)).map(x=>({recipeKey:x.recipeKey,quantity:Math.max(1,Math.floor(cleanNumber(x.quantity)||1))}));
       state={version:1,name:String(incoming.name||file.name.replace(/\.json$/i,'')),items,resources:incoming.resources&&typeof incoming.resources==='object'?incoming.resources:{}};render();toast(t('imported',{n:items.length}));
     }
-    function reportComponentTitle(recipe){return itemTitle(recipe).replace(/\s*\[(?:рецепт|recipe)\s*\d+\]\s*$/i,'')}
+    function reportComponentTitle(recipe){return componentTitle(recipe)}
     function reportIngredientTitle(ingredient){return ingredient.recipe_key&&recipeMap.has(ingredient.recipe_key)?reportComponentTitle(recipeMap.get(ingredient.recipe_key)):resourceTitle(ingredient.name)}
     function reportNumber(value){return new Intl.NumberFormat(lang==='ru'?'ru-RU':'en-US',{maximumFractionDigits:2}).format(cleanNumber(value))}
-    function reportCoalBreakdown(calc,name){
-      if(String(name).toLocaleLowerCase('en')!=='coal')return'';
-      const sources=calc.baseBreakdown.get(name);if(!sources||sources.size<2)return'';
+    function reportBaseBreakdown(calc,name){
+      const sources=calc.baseBreakdown.get(name);if(!sources||!sources.size)return'';
       const grouped=new Map();
       for(const [source,qty] of sources){
         let label=t('reportForItems');
@@ -416,20 +455,24 @@
         }
         grouped.set(label,(grouped.get(label)||0)+qty);
       }
-      return grouped.size>1?' ('+[...grouped].map(([label,qty])=>reportNumber(qty)+' '+label).join(' + ')+')':'';
+      return grouped.size?' ('+[...grouped].map(([label,qty])=>reportNumber(qty)+' '+label).join(' + ')+')':'';
     }
     function reportResourceRows(calc){
       const merged=new Map(),priority=['iron ore','steel','copper ore','coal','hides','leather','nettles','padding','silver ore'];
-      const addRow=(key,name,qty,detail='')=>{
-        const old=merged.get(key);merged.set(key,old?{...old,qty:old.qty+qty}:{key,name,qty,detail});
+      const addRow=(key,name,qty,detail='',stock=null)=>{
+        const old=merged.get(key);
+        merged.set(key,old?{...old,qty:old.qty+qty,owned:old.owned+(stock?.owned||0),remaining:old.remaining+(stock?.remaining||0)}:{key,name,qty,detail,owned:stock?.owned||0,remaining:stock?.remaining||0,kind:stock?.kind||'base'});
       };
-      for(const resource of calc.resources)if(resource.need>0)addRow(resource.name.toLocaleLowerCase('en'),resourceTitle(resource.name),resource.need,reportCoalBreakdown(calc,resource.name));
-      for(const [key,qty] of calc.componentDemand){
-        if(qty<=0)continue;const recipe=recipeMap.get(key);if(!recipe)continue;
+      for(const resource of calc.resources)if(resource.need>0)addRow(resource.name.toLocaleLowerCase('en'),resourceTitle(resource.name),resource.need,reportBaseBreakdown(calc,resource.name),{owned:resource.owned,remaining:resource.buy,kind:'base'});
+      for(const component of calc.components){
+        if(component.need<=0)continue;const recipe=component.recipe;if(!recipe)continue;
         const sortKey=String(recipe.item_norm||recipe.item||'').replace(/\s*\[.*$/,'').trim().toLocaleLowerCase('en');
-        addRow(sortKey,reportComponentTitle(recipe),qty);
+        addRow(sortKey,reportComponentTitle(recipe),component.need,'',{owned:component.owned,remaining:component.shortage,kind:'component'});
       }
-      return [...merged.values()].sort((a,b)=>{
+      return [...merged.values()].map(row=>{
+        const stock=row.owned>0||row.kind==='component'?` (${t('reportOwned')} ${reportNumber(row.owned)} · ${t('reportMissing')} ${reportNumber(row.remaining)})`:'';
+        return{...row,detail:row.detail+stock};
+      }).sort((a,b)=>{
         const ai=priority.indexOf(a.key),bi=priority.indexOf(b.key);
         if(ai!==bi)return(ai<0?999:ai)-(bi<0?999:bi);
         return a.name.localeCompare(b.name,lang==='ru'?'ru':'en');
@@ -487,7 +530,8 @@
     $('catalog').addEventListener('click',e=>{const a=e.target.closest('[data-add]'),d=e.target.closest('[data-details]');if(a)addItem(a.dataset.add);else if(d)showDetails(d.dataset.details)});
     $('items').addEventListener('click',e=>{const inc=e.target.closest('[data-inc]'),dec=e.target.closest('[data-dec]'),rm=e.target.closest('[data-remove]'),d=e.target.closest('[data-details]');if(inc)changeQty(inc.dataset.inc,1);else if(dec)changeQty(dec.dataset.dec,-1);else if(rm)removeItem(rm.dataset.remove);else if(d)showDetails(d.dataset.details)});
     $('items').addEventListener('change',e=>{if(e.target.matches('[data-qty]'))changeQty(e.target.dataset.qty,0,e.target.value)});
-    $('resources').addEventListener('change',e=>{const name=e.target.dataset.owned??e.target.dataset.price;if(name===undefined)return;state.resources[name]=state.resources[name]||{};if(e.target.dataset.owned!==undefined)state.resources[name].owned=cleanNumber(e.target.value);else state.resources[name].price=cleanNumber(e.target.value);render()});
+    const updateResource=e=>{const name=e.target.dataset.owned??e.target.dataset.price;if(name===undefined)return;state.resources[name]=state.resources[name]||{};if(e.target.dataset.owned!==undefined)state.resources[name].owned=cleanNumber(e.target.value);else state.resources[name].price=cleanNumber(e.target.value);clearTimeout(resourceInputTimer);if(e.type==='input')resourceInputTimer=setTimeout(render,180);else render()};
+    for(const body of [$('components'),$('resources')]){body.addEventListener('input',updateResource);body.addEventListener('change',updateResource)}
     $('setName').addEventListener('input',e=>{state.name=e.target.value;saveLocal()});
     $('showAll').addEventListener('change',e=>{filter.showAll=e.target.checked;render()});
     $('langBtn').addEventListener('click',()=>{const oldDefault=state.name===I18N[lang].newSet;lang=lang==='ru'?'en':'ru';storageSet('kcd2-ui-lang',lang);if(oldDefault)state.name=t('newSet');prepareDb(db)});
