@@ -72,6 +72,9 @@
     .set-count-box label{color:#6f2a24;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
     .set-count-box .number{width:62px;font-weight:bold}
     .items{display:flex;flex-direction:column;gap:10px}
+    .items-clear{display:block;width:100%;margin-top:10px;border:1px solid #7b3029;background:#ead8b48f;color:#6d2823;padding:10px 12px;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
+    .items-clear:hover{background:#6d2924;color:#fff0c8}
+    .items-clear.hidden{display:none}
     .empty{border:1px dashed #9c7e50;padding:56px 25px;text-align:center;color:#766145;background:#ead8b47d}
     .empty-mark{font-size:42px;color:#9b753c;margin-bottom:10px}
     .set-item{position:relative;border:1px solid #a1875f;background:#f7e9c9b8;display:grid;grid-template-columns:1fr auto;gap:12px;padding:14px;box-shadow:var(--soft-shadow)}
@@ -175,6 +178,7 @@
         <div class="panel-body">
           <div class="set-toolbar"><input class="set-name" id="setName" value="Новый комплект" aria-label="Название комплекта"><div class="set-count-box"><label id="setCountLabel" for="setCount">Комплектов</label><input class="number" id="setCount" type="number" min="1" step="1" value="1" aria-label="Количество комплектов"></div><div class="set-actions"><button class="btn" id="copyReportBtn">Копировать отчёт</button><button class="btn ghost" id="copyBtn">Копия JSON</button></div></div>
           <div class="items" id="items"></div>
+          <button class="items-clear hidden" id="clearItemsBtn">Очистить список снаряжения</button>
           <p class="set-footnote" id="setFootnote">Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.</p>
         </div>
       </section>
@@ -236,7 +240,7 @@
       ru:{
         documentTitle:'Книга ремесленника — конструктор сетов',eyebrow:'Ремесленная книга · KCD Roleplay',pageTitle:'Конструктор снаряжения',pageSubtitle:'Соберите заказ, посчитайте сырьё и цену каждой работы.',
         loadDbBtn:'База рецептов',importBtn:'Импорт сета',exportBtn:'Экспорт сета',clearBtn:'Очистить',catalogTitle:'Каталог ремёсел',catalogHint:'Нажмите «+», чтобы добавить предмет в заказ.',searchPlaceholder:'Поиск предмета или ресурса…',builtinDb:'встроенная база',loadedDb:'загруженная база',
-        setTitle:'Ваш комплект',setHint:'Количество у предмета указывается на один комплект.',setCountLabel:'Комплектов',quantityPerSet:'Количество в одном комплекте',setCountAria:'Количество комплектов',totalUnits:'всего {n} шт.',copyBtn:'Копия JSON',copyReportBtn:'Копировать отчёт',setFootnote:'Множитель комплектов увеличивает сразу все предметы, компоненты, сырьё и плату за работу. Запасы вычитаются уже из общего заказа.',summaryTitle:'Смета мастера',summaryHint:'Укажите имеющиеся компоненты, запасы сырья и цены — итог обновится сразу.',
+        setTitle:'Ваш комплект',setHint:'Количество у предмета указывается на один комплект.',setCountLabel:'Комплектов',quantityPerSet:'Количество в одном комплекте',setCountAria:'Количество комплектов',totalUnits:'всего {n} шт.',copyBtn:'Копия JSON',copyReportBtn:'Копировать отчёт',clearItemsBtn:'Очистить список снаряжения',clearItemsConfirm:'Удалить всё снаряжение из списка?',setFootnote:'Множитель комплектов увеличивает сразу все предметы, компоненты, сырьё и плату за работу. Запасы вычитаются уже из общего заказа.',summaryTitle:'Смета мастера',summaryHint:'Укажите имеющиеся компоненты, запасы сырья и цены — итог обновится сразу.',
         metricItemsLabel:'Предметов',metricCraftLabel:'Гроши за работу',metricResourcesLabel:'Сырьё к покупке',metricTotalLabel:'Полная стоимость',showAllLabel:'Показывать ненужные ресурсы',thResource:'Ресурс',thNeed:'Всего',thOwned:'Есть',thBuy:'Купить',thPrice:'Цена',thCost:'Сумма',
         componentsTitle:'Промежуточные материалы',componentsHint:'Сначала вычитаются ваши запасы, и только недостающее раскладывается на сырьё.',rawMaterialsTitle:'Сырьё',rawMaterialsHint:'Итог с учётом запасов промежуточных материалов.',thComponent:'Материал',thComponentNeed:'Всего',thComponentOwned:'Есть',thComponentMissing:'Не хватает',thComponentRuns:'Крафты',forItems:'на предметы',forComponents:'на компоненты',craftOutput:'получится {n}',reportOwned:'есть',reportMissing:'не хватает',
         footerSource:'Источник: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · для альтернативных рецептов компонентов используется первый вариант из базы',newSet:'Новый комплект',emptyCatalog:'Ничего не найдено',emptySetTitle:'Комплект пока пуст',emptySetHint:'Выберите предметы в каталоге слева.',noIngredients:'без сырья',levelShort:'ур.',addTitle:'Добавить',
@@ -246,7 +250,7 @@
       en:{
         documentTitle:'Craftsman’s Ledger — Set Builder',eyebrow:'Craftsman’s ledger · KCD Roleplay',pageTitle:'Equipment Set Builder',pageSubtitle:'Assemble an order and calculate every resource and crafting fee.',
         loadDbBtn:'Recipe database',importBtn:'Import set',exportBtn:'Export set',clearBtn:'Clear',catalogTitle:'Crafting catalogue',catalogHint:'Press “+” to add an item to the order.',searchPlaceholder:'Search items or resources…',builtinDb:'embedded database',loadedDb:'loaded database',
-        setTitle:'Your equipment set',setHint:'Each item quantity is the amount in one set.',setCountLabel:'Sets',quantityPerSet:'Quantity per set',setCountAria:'Number of sets',totalUnits:'{n} total',copyBtn:'Copy JSON',copyReportBtn:'Copy report',setFootnote:'The set multiplier increases every item, component, raw material, and crafting fee at once. Stock is deducted from the combined order.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter component stock, raw-material stock, and prices — totals update instantly.',
+        setTitle:'Your equipment set',setHint:'Each item quantity is the amount in one set.',setCountLabel:'Sets',quantityPerSet:'Quantity per set',setCountAria:'Number of sets',totalUnits:'{n} total',copyBtn:'Copy JSON',copyReportBtn:'Copy report',clearItemsBtn:'Clear equipment list',clearItemsConfirm:'Remove all equipment from the list?',setFootnote:'The set multiplier increases every item, component, raw material, and crafting fee at once. Stock is deducted from the combined order.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter component stock, raw-material stock, and prices — totals update instantly.',
         metricItemsLabel:'Items',metricCraftLabel:'Crafting fees',metricResourcesLabel:'Raw materials to buy',metricTotalLabel:'Total cost',showAllLabel:'Show unused resources',thResource:'Resource',thNeed:'Total',thOwned:'Owned',thBuy:'To buy',thPrice:'Price',thCost:'Cost',
         componentsTitle:'Intermediate materials',componentsHint:'Your stock is deducted first; only the shortage is expanded into raw materials.',rawMaterialsTitle:'Raw materials',rawMaterialsHint:'Totals after intermediate-material stock is applied.',thComponent:'Material',thComponentNeed:'Total',thComponentOwned:'Owned',thComponentMissing:'Shortage',thComponentRuns:'Crafts',forItems:'for items',forComponents:'for components',craftOutput:'makes {n}',reportOwned:'owned',reportMissing:'shortage',
         footerSource:'Source: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · the first database route is used for components with alternative recipes',newSet:'New equipment set',emptyCatalog:'Nothing found',emptySetTitle:'Your set is empty',emptySetHint:'Choose items from the catalogue on the left.',noIngredients:'no resources',levelShort:'lvl.',addTitle:'Add',
@@ -273,7 +277,7 @@
     function ingredientTitle(ingredient){return ingredient.recipe_key&&recipeMap.has(ingredient.recipe_key)?itemTitle(recipeMap.get(ingredient.recipe_key)):resourceTitle(ingredient.name)}
     function applyLanguage(){
       document.documentElement.lang=lang;document.title=t('documentTitle');
-      const ids=['eyebrow','pageTitle','pageSubtitle','loadDbBtn','importBtn','exportBtn','clearBtn','catalogTitle','catalogHint','setTitle','setHint','setCountLabel','copyBtn','copyReportBtn','setFootnote','summaryTitle','summaryHint','metricItemsLabel','metricCraftLabel','metricResourcesLabel','metricTotalLabel','componentsTitle','componentsHint','rawMaterialsTitle','rawMaterialsHint','showAllLabel','thComponent','thComponentNeed','thComponentOwned','thComponentMissing','thComponentRuns','thResource','thNeed','thOwned','thBuy','thPrice','thCost'];
+      const ids=['eyebrow','pageTitle','pageSubtitle','loadDbBtn','importBtn','exportBtn','clearBtn','catalogTitle','catalogHint','setTitle','setHint','setCountLabel','copyBtn','copyReportBtn','clearItemsBtn','setFootnote','summaryTitle','summaryHint','metricItemsLabel','metricCraftLabel','metricResourcesLabel','metricTotalLabel','componentsTitle','componentsHint','rawMaterialsTitle','rawMaterialsHint','showAllLabel','thComponent','thComponentNeed','thComponentOwned','thComponentMissing','thComponentRuns','thResource','thNeed','thOwned','thBuy','thPrice','thCost'];
       ids.forEach(id=>$(id).textContent=t(id));
       $('search').placeholder=t('searchPlaceholder');$('setCount').setAttribute('aria-label',t('setCountAria'));$('footerSource').innerHTML=t('footerSource');$('dialogClose').title=t('close');$('dialogClose').setAttribute('aria-label',t('close'));
       $('langBtn').textContent=lang==='ru'?'EN':'RU';$('langBtn').title=t('switchLanguage');$('dbStatus').textContent=t(dbMode==='loaded'?'loadedDb':'builtinDb');
@@ -391,6 +395,7 @@
     }
     function renderItems(calc){
       $('setName').value=state.name;$('setCount').value=calc.setCount;
+      $('clearItemsBtn').classList.toggle('hidden',!state.items.length);
       $('items').innerHTML=state.items.length?state.items.map(item=>{
         const r=recipeMap.get(item.recipeKey);const qty=Math.max(1,Math.floor(cleanNumber(item.quantity)||1)),totalQty=qty*calc.setCount;const runs=Math.ceil(totalQty/Math.max(1,cleanNumber(r.output_qty)||1));const made=runs*Math.max(1,cleanNumber(r.output_qty)||1);
         const craftWord=lang==='ru'?plural(runs,'крафт','крафта','крафтов'):`craft${runs===1?'':'s'}`;
@@ -535,6 +540,7 @@
     $('catalog').addEventListener('click',e=>{const a=e.target.closest('[data-add]'),d=e.target.closest('[data-details]');if(a)addItem(a.dataset.add);else if(d)showDetails(d.dataset.details)});
     $('items').addEventListener('click',e=>{const inc=e.target.closest('[data-inc]'),dec=e.target.closest('[data-dec]'),rm=e.target.closest('[data-remove]'),d=e.target.closest('[data-details]');if(inc)changeQty(inc.dataset.inc,1);else if(dec)changeQty(dec.dataset.dec,-1);else if(rm)removeItem(rm.dataset.remove);else if(d)showDetails(d.dataset.details)});
     $('items').addEventListener('change',e=>{if(e.target.matches('[data-qty]'))changeQty(e.target.dataset.qty,0,e.target.value)});
+    $('clearItemsBtn').addEventListener('click',()=>{if(state.items.length&&confirm(t('clearItemsConfirm'))){state.items=[];render()}});
     const updateResource=e=>{const name=e.target.dataset.owned??e.target.dataset.price;if(name===undefined)return;state.resources[name]=state.resources[name]||{};if(e.target.dataset.owned!==undefined)state.resources[name].owned=cleanNumber(e.target.value);else state.resources[name].price=cleanNumber(e.target.value);clearTimeout(resourceInputTimer);if(e.type==='input')resourceInputTimer=setTimeout(render,180);else render()};
     for(const body of [$('components'),$('resources')]){body.addEventListener('input',updateResource);body.addEventListener('change',updateResource)}
     $('setName').addEventListener('input',e=>{state.name=e.target.value;saveLocal()});
