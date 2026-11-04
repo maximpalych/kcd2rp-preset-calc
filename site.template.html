@@ -90,6 +90,12 @@
     .metric:after{content:"";position:absolute;width:48px;height:48px;right:-20px;bottom:-22px;border:1px solid #fff3c62b;transform:rotate(45deg)}
     .metric span{display:block;color:#dcc79e;font-size:9px;text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px}
     .metric strong{font-size:21px;color:#fff0c1}
+    .craft-levels{margin:0 0 13px;padding:11px 12px;border:1px solid #a08355;background:#ead7ae8a;box-shadow:inset 0 0 14px #76532618}
+    .craft-levels-title{display:block;margin-bottom:8px;color:#6f2a24;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.1em}
+    .craft-levels-list{display:flex;flex-wrap:wrap;gap:6px}
+    .craft-level{display:inline-flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid #9b7b4d;background:#fff0cc;color:#493420;font-size:11px;font-weight:bold}
+    .craft-level strong{display:grid;place-items:center;min-width:22px;height:22px;padding:0 5px;background:#682622;color:#fff0c7;font-size:12px}
+    .craft-levels.empty{display:none}
     .resource-toolbar{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:11px 1px;font-size:11px;color:#6e5b41}
     .check{display:flex;align-items:center;gap:7px;cursor:pointer}
     .check input{accent-color:var(--wine)}
@@ -171,6 +177,7 @@
             <div class="metric"><span id="metricResourcesLabel">Ресурсы к покупке</span><strong id="metricResources">0</strong></div>
             <div class="metric"><span id="metricTotalLabel">Полная стоимость</span><strong id="metricTotal">0</strong></div>
           </div>
+          <div class="craft-levels empty" id="craftLevels"></div>
           <div class="resource-toolbar">
             <label class="check"><input type="checkbox" id="showAll"> <span id="showAllLabel">Показывать ненужные ресурсы</span></label>
             <span id="resourceCount"></span>
@@ -209,7 +216,7 @@
         setTitle:'Ваш комплект',setHint:'Количество — сколько готовых предметов вы хотите получить.',copyBtn:'Копия JSON',setFootnote:'Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.',summaryTitle:'Смета мастера',summaryHint:'Заполните запасы и цены — итог обновится сразу.',
         metricItemsLabel:'Предметов',metricCraftLabel:'Гроши за работу',metricResourcesLabel:'Ресурсы к покупке',metricTotalLabel:'Полная стоимость',showAllLabel:'Показывать ненужные ресурсы',thResource:'Ресурс',thNeed:'Нужно',thOwned:'Есть',thBuy:'Купить',thPrice:'Цена',thCost:'Сумма',
         footerSource:'Источник: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · для альтернативных рецептов компонентов используется первый вариант из базы',newSet:'Новый комплект',emptyCatalog:'Ничего не найдено',emptySetTitle:'Комплект пока пуст',emptySetHint:'Выберите предметы в каталоге слева.',noIngredients:'без сырья',levelShort:'ур.',addTitle:'Добавить',
-        willMake:'получится',fee:'плата',groschen:'гр.',resourceKinds:'видов сырья',missingPrice:'Не указана цена для {n} {word}. Итог пока неполный.',resourceOne:'ресурса',resourceMany:'ресурсов',added:'Предмет добавлен в комплект',profession:'Профессия',level:'Уровень',batchOutput:'Выход партии',craftFee:'Плата за крафт',time:'Время',type:'Тип',component:'Компонент',item:'Предмет',recipe:'Рецепт',seconds:'сек.',addToSet:'Добавить в комплект',
+        willMake:'получится',fee:'плата',groschen:'гр.',resourceKinds:'видов сырья',requiredCraftLevels:'Требуемый уровень ремесла',missingPrice:'Не указана цена для {n} {word}. Итог пока неполный.',resourceOne:'ресурса',resourceMany:'ресурсов',added:'Предмет добавлен в комплект',profession:'Профессия',level:'Уровень',batchOutput:'Выход партии',craftFee:'Плата за крафт',time:'Время',type:'Тип',component:'Компонент',item:'Предмет',recipe:'Рецепт',seconds:'сек.',addToSet:'Добавить в комплект',
         exported:'Сет экспортирован',notSetFile:'Это не файл сета.',imported:'Импортировано: {n} позиций',copied:'JSON скопирован в буфер',clipboardUnavailable:'Буфер обмена недоступен',dbUpdated:'База рецептов обновлена',clearConfirm:'Очистить предметы, цены и запасы?',close:'Закрыть',switchLanguage:'Switch to English',recipesAndResources:'{recipes} рецептов · {resources} базовых ресурсов · база {date}',invalidDb:'В файле нет recipes или base_resources.',brokenDb:'Повреждён или повторяется ключ рецепта.'
       },
       en:{
@@ -218,7 +225,7 @@
         setTitle:'Your equipment set',setHint:'Quantity is the number of finished items you want.',copyBtn:'Copy JSON',setFootnote:'Component batches are combined across all items. For example, the total steel demand is calculated first and only then converted into recipe batches.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter your stock and prices — totals update instantly.',
         metricItemsLabel:'Items',metricCraftLabel:'Crafting fees',metricResourcesLabel:'Resources to buy',metricTotalLabel:'Total cost',showAllLabel:'Show unused resources',thResource:'Resource',thNeed:'Needed',thOwned:'Owned',thBuy:'To buy',thPrice:'Price',thCost:'Cost',
         footerSource:'Source: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · the first database route is used for components with alternative recipes',newSet:'New equipment set',emptyCatalog:'Nothing found',emptySetTitle:'Your set is empty',emptySetHint:'Choose items from the catalogue on the left.',noIngredients:'no resources',levelShort:'lvl.',addTitle:'Add',
-        willMake:'produces',fee:'fee',groschen:'gr.',resourceKinds:'resource types',missingPrice:'No price entered for {n} {word}. The total is incomplete.',resourceOne:'resource',resourceMany:'resources',added:'Item added to the set',profession:'Profession',level:'Level',batchOutput:'Batch output',craftFee:'Crafting fee',time:'Time',type:'Type',component:'Component',item:'Item',recipe:'Recipe',seconds:'sec.',addToSet:'Add to set',
+        willMake:'produces',fee:'fee',groschen:'gr.',resourceKinds:'resource types',requiredCraftLevels:'Required crafting levels',missingPrice:'No price entered for {n} {word}. The total is incomplete.',resourceOne:'resource',resourceMany:'resources',added:'Item added to the set',profession:'Profession',level:'Level',batchOutput:'Batch output',craftFee:'Crafting fee',time:'Time',type:'Type',component:'Component',item:'Item',recipe:'Recipe',seconds:'sec.',addToSet:'Add to set',
         exported:'Set exported',notSetFile:'This is not a set file.',imported:'Imported: {n} entries',copied:'JSON copied to clipboard',clipboardUnavailable:'Clipboard is unavailable',dbUpdated:'Recipe database updated',clearConfirm:'Clear items, prices, and stock?',close:'Close',switchLanguage:'Переключить на русский',recipesAndResources:'{recipes} recipes · {resources} base resources · database {date}',invalidDb:'The file has no recipes or base_resources.',brokenDb:'A recipe key is damaged or duplicated.'
       }
     };
@@ -285,21 +292,22 @@
     function resourceTitle(name){return lang==='ru'?(RU[name]||name):name}
 
     function calculate(){
-      const base=new Map(), demand=new Map(), componentRuns=new Map();
+      const base=new Map(), demand=new Map(), componentRuns=new Map(), requiredLevels=new Map();
       let craftFee=0,totalItems=0,finalRuns=0;
       const add=(map,key,value)=>map.set(key,(map.get(key)||0)+value);
+      const requireLevel=recipe=>requiredLevels.set(recipe.profession,Math.max(requiredLevels.get(recipe.profession)||0,cleanNumber(recipe.level)));
       const feed=ingredient=>ingredient.recipe_key?add(demand,ingredient.recipe_key,ingredient.qty):add(base,ingredient.name,ingredient.qty);
       for(const item of state.items){
         const r=recipeMap.get(item.recipeKey); if(!r) continue;
         const qty=Math.max(1,Math.floor(cleanNumber(item.quantity)||1));
         const runs=Math.ceil(qty/Math.max(1,cleanNumber(r.output_qty)||1));
-        totalItems+=qty; finalRuns+=runs; craftFee+=runs*cleanNumber(r.craft_fee);
+        totalItems+=qty; finalRuns+=runs; craftFee+=runs*cleanNumber(r.craft_fee);requireLevel(r);
         r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs}));
       }
       for(const key of componentOrder){
         const needed=demand.get(key)||0; if(needed<=0) continue;
         const r=recipeMap.get(key); if(!r) continue;
-        const runs=Math.ceil(needed/Math.max(1,cleanNumber(r.output_qty)||1)); componentRuns.set(key,runs);
+        const runs=Math.ceil(needed/Math.max(1,cleanNumber(r.output_qty)||1)); componentRuns.set(key,runs);requireLevel(r);
         craftFee+=runs*cleanNumber(r.craft_fee);
         r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs}));
       }
@@ -310,7 +318,7 @@
         if(buy>0&&!price) missingPrices++; resourceCost+=cost;toBuyUnits+=buy;
         return{name,need,owned,buy,price,cost};
       });
-      return{resources,craftFee,resourceCost,total:craftFee+resourceCost,missingPrices,totalItems,finalRuns,componentRuns,toBuyUnits};
+      return{resources,craftFee,resourceCost,total:craftFee+resourceCost,missingPrices,totalItems,finalRuns,componentRuns,toBuyUnits,requiredLevels};
     }
 
     function renderTabs(){
@@ -342,6 +350,9 @@
       }).join(''):`<div class="empty"><div class="empty-mark">⚒</div><strong>${t('emptySetTitle')}</strong><br><br>${t('emptySetHint')}</div>`;
     }
     function renderResources(calc){
+      const levels=PROFESSIONS.slice(1).filter(name=>calc.requiredLevels.has(name));
+      $('craftLevels').classList.toggle('empty',!levels.length);
+      $('craftLevels').innerHTML=levels.length?`<span class="craft-levels-title">${t('requiredCraftLevels')}</span><div class="craft-levels-list">${levels.map(name=>`<span class="craft-level">${esc(professionTitle(name))}<strong>${fmt(calc.requiredLevels.get(name),0)}</strong></span>`).join('')}</div>`:'';
       const visible=calc.resources.filter(r=>filter.showAll||r.need>0);
       $('resourceCount').textContent=`${visible.filter(r=>r.need>0).length} ${t('resourceKinds')}`;
       $('resources').innerHTML=visible.map(r=>`<tr><td><span class="resource-name">${esc(resourceTitle(r.name))}</span>${resourceTitle(r.name)!==r.name?`<span class="resource-original">${esc(r.name)}</span>`:''}</td><td class="${r.need?'need':'zero'}">${fmt(r.need)}</td><td><input class="cell-input" type="number" min="0" step="any" data-owned="${esc(r.name)}" value="${r.owned||''}" placeholder="0"></td><td class="${r.buy?'':'zero'}">${fmt(r.buy)}</td><td><input class="cell-input" type="number" min="0" step="any" data-price="${esc(r.name)}" value="${r.price||''}" placeholder="0"></td><td class="${r.cost?'cost':'zero'}">${fmt(r.cost)}</td></tr>`).join('');
