@@ -18,6 +18,7 @@ if(html.includes('.replaceAll('))throw new Error('Unsupported replaceAll remains
 for(const needle of ['function calculate()','function exportSet()','async function importSet','const I18N=','id="langBtn"','id="craftLevels"','requiredCraftLevels','requiredLevels=new Map()','function applyLanguage()','function matchesSearch(','professionTitle','data-owned','data-price','Кузнец','Лучное дело','Equipment Set Builder','Конструктор снаряжения'])if(!html.includes(needle))throw new Error(`Missing feature: ${needle}`);
 
 const recipeMap=new Map(db.recipes.map(r=>[r.recipe_key,r]));
+for(const needle of ['function buildMarkdownReport()','id="copyReportBtn"','componentDemand:demand','baseBreakdown'])if(!html.includes(needle))throw new Error('Markdown report feature is missing');
 const steel=recipeMap.get('Кузнец|steel');
 if(!steel||steel.output_qty!==2)throw new Error('Steel route missing');
 const steelIngredients=Object.fromEntries(steel.ingredients.map(i=>[i.name,i.qty]));

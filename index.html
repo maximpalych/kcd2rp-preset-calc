@@ -66,6 +66,7 @@
     .add{align-self:center;width:36px;height:36px;border:1px solid #5f211d;background:linear-gradient(#7a3029,#531e1a);color:#ffe7aa;font-size:23px;line-height:1;cursor:pointer;box-shadow:inset 0 0 0 2px #431713,0 3px 7px #3920124d;transition:.15s}
     .add:hover{background:#8a382f;transform:scale(1.05)}
     .set-toolbar{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:14px}
+    .set-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
     .set-name{width:100%;border:0;border-bottom:2px solid #9b7540;background:transparent;color:#39271b;padding:8px 4px;font-size:20px;font-weight:bold;outline:none}
     .items{display:flex;flex-direction:column;gap:10px}
     .empty{border:1px dashed #9c7e50;padding:56px 25px;text-align:center;color:#766145;background:#ead8b47d}
@@ -162,7 +163,7 @@
       <section class="panel set-panel">
         <div class="panel-head"><h2 id="setTitle">Ваш комплект</h2><p id="setHint">Количество — сколько готовых предметов вы хотите получить.</p></div>
         <div class="panel-body">
-          <div class="set-toolbar"><input class="set-name" id="setName" value="Новый комплект" aria-label="Название комплекта"><button class="btn ghost" id="copyBtn">Копия JSON</button></div>
+          <div class="set-toolbar"><input class="set-name" id="setName" value="Новый комплект" aria-label="Название комплекта"><div class="set-actions"><button class="btn" id="copyReportBtn">Копировать отчёт</button><button class="btn ghost" id="copyBtn">Копия JSON</button></div></div>
           <div class="items" id="items"></div>
           <p class="set-footnote" id="setFootnote">Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.</p>
         </div>
@@ -213,20 +214,20 @@
       ru:{
         documentTitle:'Книга ремесленника — конструктор сетов',eyebrow:'Ремесленная книга · KCD Roleplay',pageTitle:'Конструктор снаряжения',pageSubtitle:'Соберите заказ, посчитайте сырьё и цену каждой работы.',
         loadDbBtn:'База рецептов',importBtn:'Импорт сета',exportBtn:'Экспорт сета',clearBtn:'Очистить',catalogTitle:'Каталог ремёсел',catalogHint:'Нажмите «+», чтобы добавить предмет в заказ.',searchPlaceholder:'Поиск предмета или ресурса…',builtinDb:'встроенная база',loadedDb:'загруженная база',
-        setTitle:'Ваш комплект',setHint:'Количество — сколько готовых предметов вы хотите получить.',copyBtn:'Копия JSON',setFootnote:'Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.',summaryTitle:'Смета мастера',summaryHint:'Заполните запасы и цены — итог обновится сразу.',
+        setTitle:'Ваш комплект',setHint:'Количество — сколько готовых предметов вы хотите получить.',copyBtn:'Копия JSON',copyReportBtn:'Копировать отчёт',setFootnote:'Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.',summaryTitle:'Смета мастера',summaryHint:'Заполните запасы и цены — итог обновится сразу.',
         metricItemsLabel:'Предметов',metricCraftLabel:'Гроши за работу',metricResourcesLabel:'Ресурсы к покупке',metricTotalLabel:'Полная стоимость',showAllLabel:'Показывать ненужные ресурсы',thResource:'Ресурс',thNeed:'Нужно',thOwned:'Есть',thBuy:'Купить',thPrice:'Цена',thCost:'Сумма',
         footerSource:'Источник: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · для альтернативных рецептов компонентов используется первый вариант из базы',newSet:'Новый комплект',emptyCatalog:'Ничего не найдено',emptySetTitle:'Комплект пока пуст',emptySetHint:'Выберите предметы в каталоге слева.',noIngredients:'без сырья',levelShort:'ур.',addTitle:'Добавить',
         willMake:'получится',fee:'плата',groschen:'гр.',resourceKinds:'видов сырья',requiredCraftLevels:'Требуемый уровень ремесла',missingPrice:'Не указана цена для {n} {word}. Итог пока неполный.',resourceOne:'ресурса',resourceMany:'ресурсов',added:'Предмет добавлен в комплект',profession:'Профессия',level:'Уровень',batchOutput:'Выход партии',craftFee:'Плата за крафт',time:'Время',type:'Тип',component:'Компонент',item:'Предмет',recipe:'Рецепт',seconds:'сек.',addToSet:'Добавить в комплект',
-        exported:'Сет экспортирован',notSetFile:'Это не файл сета.',imported:'Импортировано: {n} позиций',copied:'JSON скопирован в буфер',clipboardUnavailable:'Буфер обмена недоступен',dbUpdated:'База рецептов обновлена',clearConfirm:'Очистить предметы, цены и запасы?',close:'Закрыть',switchLanguage:'Switch to English',recipesAndResources:'{recipes} рецептов · {resources} базовых ресурсов · база {date}',invalidDb:'В файле нет recipes или base_resources.',brokenDb:'Повреждён или повторяется ключ рецепта.'
+        exported:'Сет экспортирован',notSetFile:'Это не файл сета.',imported:'Импортировано: {n} позиций',copied:'JSON скопирован в буфер',reportCopied:'Отчёт скопирован в буфер',reportEmpty:'Сначала добавьте предметы в комплект.',reportRequirements:'Требования',reportEquipment:'Список снаряжения',reportResources:'Всего потребуется ресурсов',reportCost:'Стоимость',reportResourceCost:'Ресурсы',reportWorkbenches:'Верстаки',reportTotal:'Итого',reportForItems:'на предметы',clipboardUnavailable:'Буфер обмена недоступен',dbUpdated:'База рецептов обновлена',clearConfirm:'Очистить предметы, цены и запасы?',close:'Закрыть',switchLanguage:'Switch to English',recipesAndResources:'{recipes} рецептов · {resources} базовых ресурсов · база {date}',invalidDb:'В файле нет recipes или base_resources.',brokenDb:'Повреждён или повторяется ключ рецепта.'
       },
       en:{
         documentTitle:'Craftsman’s Ledger — Set Builder',eyebrow:'Craftsman’s ledger · KCD Roleplay',pageTitle:'Equipment Set Builder',pageSubtitle:'Assemble an order and calculate every resource and crafting fee.',
         loadDbBtn:'Recipe database',importBtn:'Import set',exportBtn:'Export set',clearBtn:'Clear',catalogTitle:'Crafting catalogue',catalogHint:'Press “+” to add an item to the order.',searchPlaceholder:'Search items or resources…',builtinDb:'embedded database',loadedDb:'loaded database',
-        setTitle:'Your equipment set',setHint:'Quantity is the number of finished items you want.',copyBtn:'Copy JSON',setFootnote:'Component batches are combined across all items. For example, the total steel demand is calculated first and only then converted into recipe batches.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter your stock and prices — totals update instantly.',
+        setTitle:'Your equipment set',setHint:'Quantity is the number of finished items you want.',copyBtn:'Copy JSON',copyReportBtn:'Copy report',setFootnote:'Component batches are combined across all items. For example, the total steel demand is calculated first and only then converted into recipe batches.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter your stock and prices — totals update instantly.',
         metricItemsLabel:'Items',metricCraftLabel:'Crafting fees',metricResourcesLabel:'Resources to buy',metricTotalLabel:'Total cost',showAllLabel:'Show unused resources',thResource:'Resource',thNeed:'Needed',thOwned:'Owned',thBuy:'To buy',thPrice:'Price',thCost:'Cost',
         footerSource:'Source: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · the first database route is used for components with alternative recipes',newSet:'New equipment set',emptyCatalog:'Nothing found',emptySetTitle:'Your set is empty',emptySetHint:'Choose items from the catalogue on the left.',noIngredients:'no resources',levelShort:'lvl.',addTitle:'Add',
         willMake:'produces',fee:'fee',groschen:'gr.',resourceKinds:'resource types',requiredCraftLevels:'Required crafting levels',missingPrice:'No price entered for {n} {word}. The total is incomplete.',resourceOne:'resource',resourceMany:'resources',added:'Item added to the set',profession:'Profession',level:'Level',batchOutput:'Batch output',craftFee:'Crafting fee',time:'Time',type:'Type',component:'Component',item:'Item',recipe:'Recipe',seconds:'sec.',addToSet:'Add to set',
-        exported:'Set exported',notSetFile:'This is not a set file.',imported:'Imported: {n} entries',copied:'JSON copied to clipboard',clipboardUnavailable:'Clipboard is unavailable',dbUpdated:'Recipe database updated',clearConfirm:'Clear items, prices, and stock?',close:'Close',switchLanguage:'Переключить на русский',recipesAndResources:'{recipes} recipes · {resources} base resources · database {date}',invalidDb:'The file has no recipes or base_resources.',brokenDb:'A recipe key is damaged or duplicated.'
+        exported:'Set exported',notSetFile:'This is not a set file.',imported:'Imported: {n} entries',copied:'JSON copied to clipboard',reportCopied:'Report copied to clipboard',reportEmpty:'Add items to the set first.',reportRequirements:'Requirements',reportEquipment:'Equipment list',reportResources:'Total resources required',reportCost:'Cost',reportResourceCost:'Resources',reportWorkbenches:'Workbenches',reportTotal:'Total',reportForItems:'for items',clipboardUnavailable:'Clipboard is unavailable',dbUpdated:'Recipe database updated',clearConfirm:'Clear items, prices, and stock?',close:'Close',switchLanguage:'Переключить на русский',recipesAndResources:'{recipes} recipes · {resources} base resources · database {date}',invalidDb:'The file has no recipes or base_resources.',brokenDb:'A recipe key is damaged or duplicated.'
       }
     };
     const RU={
@@ -248,7 +249,7 @@
     function ingredientTitle(ingredient){return ingredient.recipe_key&&recipeMap.has(ingredient.recipe_key)?itemTitle(recipeMap.get(ingredient.recipe_key)):resourceTitle(ingredient.name)}
     function applyLanguage(){
       document.documentElement.lang=lang;document.title=t('documentTitle');
-      const ids=['eyebrow','pageTitle','pageSubtitle','loadDbBtn','importBtn','exportBtn','clearBtn','catalogTitle','catalogHint','setTitle','setHint','copyBtn','setFootnote','summaryTitle','summaryHint','metricItemsLabel','metricCraftLabel','metricResourcesLabel','metricTotalLabel','showAllLabel','thResource','thNeed','thOwned','thBuy','thPrice','thCost'];
+      const ids=['eyebrow','pageTitle','pageSubtitle','loadDbBtn','importBtn','exportBtn','clearBtn','catalogTitle','catalogHint','setTitle','setHint','copyBtn','copyReportBtn','setFootnote','summaryTitle','summaryHint','metricItemsLabel','metricCraftLabel','metricResourcesLabel','metricTotalLabel','showAllLabel','thResource','thNeed','thOwned','thBuy','thPrice','thCost'];
       ids.forEach(id=>$(id).textContent=t(id));
       $('search').placeholder=t('searchPlaceholder');$('footerSource').innerHTML=t('footerSource');$('dialogClose').title=t('close');$('dialogClose').setAttribute('aria-label',t('close'));
       $('langBtn').textContent=lang==='ru'?'EN':'RU';$('langBtn').title=t('switchLanguage');$('dbStatus').textContent=t(dbMode==='loaded'?'loadedDb':'builtinDb');
@@ -292,24 +293,34 @@
     function resourceTitle(name){return lang==='ru'?(RU[name]||name):name}
 
     function calculate(){
-      const base=new Map(), demand=new Map(), componentRuns=new Map(), requiredLevels=new Map();
+      const base=new Map(), demand=new Map(), componentRuns=new Map(), requiredLevels=new Map(), requiredLevelRanges=new Map(), baseBreakdown=new Map();
       let craftFee=0,totalItems=0,finalRuns=0;
       const add=(map,key,value)=>map.set(key,(map.get(key)||0)+value);
-      const requireLevel=recipe=>requiredLevels.set(recipe.profession,Math.max(requiredLevels.get(recipe.profession)||0,cleanNumber(recipe.level)));
-      const feed=ingredient=>ingredient.recipe_key?add(demand,ingredient.recipe_key,ingredient.qty):add(base,ingredient.name,ingredient.qty);
+      const requireLevel=recipe=>{
+        const level=cleanNumber(recipe.level),range=requiredLevelRanges.get(recipe.profession);
+        if(level<=0)return;
+        requiredLevels.set(recipe.profession,Math.max(requiredLevels.get(recipe.profession)||0,level));
+        requiredLevelRanges.set(recipe.profession,range?{min:Math.min(range.min,level),max:Math.max(range.max,level)}:{min:level,max:level});
+      };
+      const feed=(ingredient,source)=>{
+        if(ingredient.recipe_key){add(demand,ingredient.recipe_key,ingredient.qty);return}
+        add(base,ingredient.name,ingredient.qty);
+        if(!baseBreakdown.has(ingredient.name))baseBreakdown.set(ingredient.name,new Map());
+        add(baseBreakdown.get(ingredient.name),source,ingredient.qty);
+      };
       for(const item of state.items){
         const r=recipeMap.get(item.recipeKey); if(!r) continue;
         const qty=Math.max(1,Math.floor(cleanNumber(item.quantity)||1));
         const runs=Math.ceil(qty/Math.max(1,cleanNumber(r.output_qty)||1));
         totalItems+=qty; finalRuns+=runs; craftFee+=runs*cleanNumber(r.craft_fee);requireLevel(r);
-        r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs}));
+        r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs},'direct'));
       }
       for(const key of componentOrder){
         const needed=demand.get(key)||0; if(needed<=0) continue;
         const r=recipeMap.get(key); if(!r) continue;
         const runs=Math.ceil(needed/Math.max(1,cleanNumber(r.output_qty)||1)); componentRuns.set(key,runs);requireLevel(r);
         craftFee+=runs*cleanNumber(r.craft_fee);
-        r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs}));
+        r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs},key));
       }
       let resourceCost=0,missingPrices=0,toBuyUnits=0;
       const resources=db.base_resources.map(name=>{
@@ -318,7 +329,7 @@
         if(buy>0&&!price) missingPrices++; resourceCost+=cost;toBuyUnits+=buy;
         return{name,need,owned,buy,price,cost};
       });
-      return{resources,craftFee,resourceCost,total:craftFee+resourceCost,missingPrices,totalItems,finalRuns,componentRuns,toBuyUnits,requiredLevels};
+      return{resources,craftFee,resourceCost,total:craftFee+resourceCost,missingPrices,totalItems,finalRuns,componentRuns,componentDemand:demand,toBuyUnits,requiredLevels,requiredLevelRanges,baseBreakdown};
     }
 
     function renderTabs(){
@@ -389,7 +400,84 @@
       const items=incoming.items.filter(x=>recipeMap.has(x.recipeKey)).map(x=>({recipeKey:x.recipeKey,quantity:Math.max(1,Math.floor(cleanNumber(x.quantity)||1))}));
       state={version:1,name:String(incoming.name||file.name.replace(/\.json$/i,'')),items,resources:incoming.resources&&typeof incoming.resources==='object'?incoming.resources:{}};render();toast(t('imported',{n:items.length}));
     }
-    async function copyJson(){await navigator.clipboard.writeText(JSON.stringify(serializable(),null,2));toast(t('copied'))}
+    function reportComponentTitle(recipe){return itemTitle(recipe).replace(/\s*\[(?:рецепт|recipe)\s*\d+\]\s*$/i,'')}
+    function reportIngredientTitle(ingredient){return ingredient.recipe_key&&recipeMap.has(ingredient.recipe_key)?reportComponentTitle(recipeMap.get(ingredient.recipe_key)):resourceTitle(ingredient.name)}
+    function reportNumber(value){return new Intl.NumberFormat(lang==='ru'?'ru-RU':'en-US',{maximumFractionDigits:2}).format(cleanNumber(value))}
+    function reportCoalBreakdown(calc,name){
+      if(String(name).toLocaleLowerCase('en')!=='coal')return'';
+      const sources=calc.baseBreakdown.get(name);if(!sources||sources.size<2)return'';
+      const grouped=new Map();
+      for(const [source,qty] of sources){
+        let label=t('reportForItems');
+        if(source!=='direct'){
+          const recipe=recipeMap.get(source);if(!recipe)continue;
+          const title=reportComponentTitle(recipe).toLocaleLowerCase(lang==='ru'?'ru':'en');
+          label=(lang==='ru'?'на ':'for ')+title;
+        }
+        grouped.set(label,(grouped.get(label)||0)+qty);
+      }
+      return grouped.size>1?' ('+[...grouped].map(([label,qty])=>reportNumber(qty)+' '+label).join(' + ')+')':'';
+    }
+    function reportResourceRows(calc){
+      const merged=new Map(),priority=['iron ore','steel','copper ore','coal','hides','leather','nettles','padding','silver ore'];
+      const addRow=(key,name,qty,detail='')=>{
+        const old=merged.get(key);merged.set(key,old?{...old,qty:old.qty+qty}:{key,name,qty,detail});
+      };
+      for(const resource of calc.resources)if(resource.need>0)addRow(resource.name.toLocaleLowerCase('en'),resourceTitle(resource.name),resource.need,reportCoalBreakdown(calc,resource.name));
+      for(const [key,qty] of calc.componentDemand){
+        if(qty<=0)continue;const recipe=recipeMap.get(key);if(!recipe)continue;
+        const sortKey=String(recipe.item_norm||recipe.item||'').replace(/\s*\[.*$/,'').trim().toLocaleLowerCase('en');
+        addRow(sortKey,reportComponentTitle(recipe),qty);
+      }
+      return [...merged.values()].sort((a,b)=>{
+        const ai=priority.indexOf(a.key),bi=priority.indexOf(b.key);
+        if(ai!==bi)return(ai<0?999:ai)-(bi<0?999:bi);
+        return a.name.localeCompare(b.name,lang==='ru'?'ru':'en');
+      });
+    }
+    function buildMarkdownReport(){
+      const calc=calculate(),setName=String(state.name||t('newSet')).replace(/[\r\n]+/g,' ').trim();
+      const requirements=PROFESSIONS.slice(1).filter(name=>calc.requiredLevelRanges.has(name)).map(name=>{
+        const range=calc.requiredLevelRanges.get(name),value=range.min===range.max?reportNumber(range.max):reportNumber(range.min)+'–'+reportNumber(range.max);
+        const profession=professionTitle(name).toLocaleLowerCase(lang==='ru'?'ru':'en');
+        return lang==='ru'?profession+' **'+value+' уровня**':profession+' **level'+(range.min===range.max?'':'s')+' '+value+'**';
+      });
+      const equipment=state.items.map(item=>{
+        const recipe=recipeMap.get(item.recipeKey),qty=Math.max(1,Math.floor(cleanNumber(item.quantity)||1));
+        const runs=Math.ceil(qty/Math.max(1,cleanNumber(recipe.output_qty)||1));
+        const name=itemTitle(recipe)+(qty>1?' ×'+qty:'');
+        const level=cleanNumber(recipe.level)>0?t('levelShort')+' '+reportNumber(recipe.level):'—';
+        const ingredients=recipe.ingredients.map(i=>reportIngredientTitle(i)+': '+reportNumber(cleanNumber(i.qty)*runs)).join(' · ')||t('noIngredients');
+        return{name,level,ingredients};
+      });
+      const nameWidth=Math.max(20,...equipment.map(row=>row.name.length)),levelWidth=Math.max(5,...equipment.map(row=>row.level.length));
+      const equipmentLines=equipment.map(row=>row.name.padEnd(nameWidth)+' │ '+row.level.padStart(levelWidth)+' │ '+row.ingredients);
+      const resources=reportResourceRows(calc),resourceWidth=Math.max(12,...resources.map(row=>row.name.length));
+      const resourceLines=resources.map(row=>row.name.padEnd(resourceWidth)+' — '+reportNumber(row.qty)+row.detail);
+      const incomplete=calc.missingPrices>0?'+':'',money=value=>reportNumber(value)+incomplete+' '+t('groschen');
+      const costLabels=[t('reportResourceCost'),t('reportWorkbenches'),t('reportTotal')],costWidth=Math.max(...costLabels.map(x=>x.length));
+      const fence=String.fromCharCode(96).repeat(3);
+      const lines=[
+        '# '+(lang==='ru'?'Снаряжение':'Equipment')+': «'+setName+'»',
+        '**'+t('reportRequirements')+':** '+(requirements.length?requirements.join(', '):'—'),
+        '## '+t('reportEquipment'),fence+'text',...equipmentLines,fence,
+        '## '+t('reportResources'),fence+'text',...resourceLines,fence,
+        '## '+t('reportCost'),fence+'text',
+        t('reportResourceCost').padEnd(costWidth)+' — '+money(calc.resourceCost),
+        t('reportWorkbenches').padEnd(costWidth)+' — '+reportNumber(calc.craftFee)+' '+t('groschen'),
+        '─'.repeat(costWidth+14),
+        t('reportTotal').padEnd(costWidth)+' — '+money(calc.total),fence
+      ];
+      if(calc.missingPrices)lines.push('','> '+t('missingPrice',{n:calc.missingPrices,word:calc.missingPrices===1?t('resourceOne'):t('resourceMany')}));
+      return lines.join('\n');
+    }
+    async function writeClipboard(text){
+      if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(text);return}
+      const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.cssText='position:fixed;left:-9999px;top:0';document.body.append(area);area.select();
+      const copied=document.execCommand('copy');area.remove();if(!copied)throw new Error(t('clipboardUnavailable'));
+    }
+    async function copyJson(){await writeClipboard(JSON.stringify(serializable(),null,2));toast(t('copied'))}
+    async function copyReport(){if(!state.items.length){toast(t('reportEmpty'));return}await writeClipboard(buildMarkdownReport());toast(t('reportCopied'))}
     function saveLocal(){try{localStorage.setItem('kcd2-set-builder-state',JSON.stringify(serializable()))}catch(e){}}
     function restoreLocal(){try{const x=JSON.parse(localStorage.getItem('kcd2-set-builder-state'));if(x&&Array.isArray(x.items))state={version:1,name:x.name||'Новый комплект',items:x.items,resources:x.resources||{}}}catch(e){}}
     function toast(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').classList.add('show');toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2200)}
@@ -403,7 +491,7 @@
     $('setName').addEventListener('input',e=>{state.name=e.target.value;saveLocal()});
     $('showAll').addEventListener('change',e=>{filter.showAll=e.target.checked;render()});
     $('langBtn').addEventListener('click',()=>{const oldDefault=state.name===I18N[lang].newSet;lang=lang==='ru'?'en':'ru';storageSet('kcd2-ui-lang',lang);if(oldDefault)state.name=t('newSet');prepareDb(db)});
-    $('exportBtn').addEventListener('click',exportSet);$('copyBtn').addEventListener('click',()=>copyJson().catch(()=>toast(t('clipboardUnavailable'))));
+    $('exportBtn').addEventListener('click',exportSet);$('copyBtn').addEventListener('click',()=>copyJson().catch(()=>toast(t('clipboardUnavailable'))));$('copyReportBtn').addEventListener('click',()=>copyReport().catch(()=>toast(t('clipboardUnavailable'))));
     $('importBtn').addEventListener('click',()=>$('importFile').click());
     $('importFile').addEventListener('change',e=>{if(e.target.files[0])importSet(e.target.files[0]).catch(err=>alert(err.message));e.target.value=''});
     $('loadDbBtn').addEventListener('click',()=>$('dbFile').click());
