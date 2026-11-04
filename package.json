@@ -1,0 +1,11 @@
+{
+  "name": "kcd2rp-preset-calc",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build-site.mjs",
+    "test": "node test-site.mjs",
+    "translate": "node translate-items.mjs"
+  }
+}

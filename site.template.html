@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Книга ремесленника — конструктор сетов</title>
+  <style>
+    :root{--ink:#241b14;--paper:#d9c39a;--paper2:#bda476;--paper3:#8f744b;--wine:#641f1e;--wine2:#3b1112;--gold:#c49a4a;--gold2:#806126;--wood:#20150f;--wood2:#120c09;--iron:#605f59;--green:#66734a;--red:#a04435;--cream:#f1e2bd;--muted:#aa9878;--shadow:0 18px 55px #080504a8;--radius:4px}
+    *{box-sizing:border-box}
+    html{min-height:100%;background:#0f0a07}
+    body{margin:0;min-height:100vh;color:var(--cream);font-family:Georgia,"Times New Roman",serif;background:
+      radial-gradient(ellipse at 50% -15%,#65442a99 0,transparent 48%),
+      repeating-linear-gradient(92deg,#1a100b 0,#1a100b 9px,#160d09 10px,#1e120c 18px,#130b08 19px);}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background:repeating-radial-gradient(circle at 25% 30%,transparent 0 3px,#000 4px 5px)}
+    button,input,select{font:inherit}
+    button{color:inherit}
+    .shell{width:min(1880px,calc(100% - 28px));margin:18px auto 28px;position:relative}
+    .topbar{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:22px 26px;border:1px solid #b18842;background:linear-gradient(180deg,#351b13,#1d100c);box-shadow:var(--shadow),inset 0 0 0 3px #130a08,inset 0 0 0 4px #6b4b25;position:relative}
+    .topbar:after,.panel:after{content:"";position:absolute;inset:7px;border:1px solid #ae88403b;pointer-events:none}
+    .eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#d2aa5b;margin-bottom:7px}
+    h1{font-size:clamp(25px,3vw,44px);line-height:.95;margin:0;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 2px #000}
+    .subtitle{color:#b9a583;margin:10px 0 0;font-style:italic}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;position:relative;z-index:1}
+    .btn{border:1px solid #9d783a;background:linear-gradient(#5d2722,#3b1715);padding:10px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;font-weight:bold;font-size:12px;box-shadow:inset 0 0 0 2px #2b0e0e,0 2px 5px #0008;transition:.16s}
+    .btn:hover{filter:brightness(1.2);transform:translateY(-1px)}
+    .btn.secondary{background:linear-gradient(#49423a,#2a2520);border-color:#75674f}
+    .btn.ghost{background:#17100bc9;color:#cbb892}
+    .btn.danger{border-color:#823830;background:#421817;color:#e3b6a8}
+    .btn.lang{min-width:54px;background:linear-gradient(#6b552f,#392a19);color:#ffe3a3}
+    .layout{display:grid;grid-template-columns:minmax(290px,360px) minmax(390px,1fr) minmax(390px,520px);gap:14px;margin-top:14px;align-items:start}
+    .panel{position:relative;background:linear-gradient(145deg,#302017f5,#1a110df7);border:1px solid #806033;box-shadow:var(--shadow),inset 0 0 22px #0007;min-width:0}
+    .panel-head{position:relative;z-index:1;padding:18px 20px 13px;border-bottom:1px solid #73552f;background:linear-gradient(90deg,#4a201b,#2d1713)}
+    .panel-head h2{font-size:19px;margin:0;text-transform:uppercase;letter-spacing:.08em}
+    .panel-head p{margin:5px 0 0;color:#b7a17e;font-size:12px}
+    .panel-body{position:relative;z-index:1;padding:14px}
+    .search{width:100%;border:1px solid #735b37;background:#110c09;color:#ead9b3;padding:11px 12px;outline:none;box-shadow:inset 0 2px 8px #0009}
+    .search:focus,.number:focus,.set-name:focus{border-color:#d0a44f;box-shadow:0 0 0 2px #c99a3f2e}
+    .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+    .tab{border:1px solid #665034;background:#21150f;padding:7px 9px;color:#cbb997;cursor:pointer;font-size:12px}
+    .tab.active{background:#6b2721;border-color:#b78c43;color:#fff0c7}
+    .catalog-meta{display:flex;justify-content:space-between;color:#9f8d70;font-size:11px;margin:8px 2px}
+    .catalog-list{height:calc(100vh - 315px);min-height:420px;overflow:auto;padding-right:4px;scrollbar-color:#765630 #16100c;scrollbar-width:thin}
+    .recipe-card{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 10px;margin:0 0 7px;border:1px solid #4e3b28;background:linear-gradient(90deg,#281a13,#1c120e);transition:.15s}
+    .recipe-card:hover{border-color:#a77e3d;background:#342116}
+    .recipe-title{font-weight:bold;font-size:14px;color:#ecd6a7;cursor:pointer}
+    .recipe-original{display:block;color:#786b58;font-size:10px;font-weight:normal;margin-top:3px}
+    .recipe-sub{color:#9d8a6c;font-size:11px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:245px}
+    .level{display:inline-block;color:#cdaa61;border-right:1px solid #5d472d;margin-right:7px;padding-right:7px}
+    .add{align-self:center;width:34px;height:34px;border:1px solid #9f7b3b;background:#5b211d;color:#f6dfa7;font-size:23px;line-height:1;cursor:pointer}
+    .add:hover{background:#7a3028}
+    .set-toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:12px}
+    .set-name{width:100%;border:0;border-bottom:1px solid #8b6a38;background:transparent;color:#f2deb0;padding:8px 4px;font-size:18px;font-weight:bold;outline:none}
+    .items{display:flex;flex-direction:column;gap:8px}
+    .empty{border:1px dashed #6c5536;padding:54px 25px;text-align:center;color:#a99778;background:#160e0a80}
+    .empty-mark{font-size:42px;color:#765b32;margin-bottom:10px}
+    .set-item{border:1px solid #5f472d;background:#1a110d;display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px}
+    .set-item-top{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+    .profession-badge{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:#d1b474;background:#4e211d;padding:3px 6px;border:1px solid #7f5632}
+    .set-item-name{font-weight:bold;color:#eedbad;cursor:pointer}
+    .set-item-meta{font-size:11px;color:#98876d;margin-top:6px;line-height:1.5}
+    .qty{display:grid;grid-template-columns:28px 54px 28px 28px;gap:4px;align-content:center}
+    .qty button{border:1px solid #6d5333;background:#352219;color:#dcc495;cursor:pointer}
+    .qty button:hover{background:#5b2921}
+    .qty .remove{color:#d9947c;border-color:#6e332b}
+    .number{width:100%;min-width:0;border:1px solid #745936;background:#0f0a08;color:#f0ddb5;text-align:center;padding:6px;outline:none}
+    .set-footnote{margin:13px 2px 2px;color:#958268;font-size:11px;line-height:1.5}
+    .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+    .metric{border:1px solid #6e512d;background:linear-gradient(145deg,#4a251a,#271510);padding:11px}
+    .metric span{display:block;color:#a99573;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+    .metric strong{font-size:19px;color:#efd99e}
+    .resource-toolbar{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:10px 0;font-size:11px;color:#a89472}
+    .check{display:flex;align-items:center;gap:6px;cursor:pointer}
+    .resource-wrap{max-height:calc(100vh - 370px);min-height:390px;overflow:auto;border:1px solid #4c3a27;scrollbar-color:#765630 #16100c;scrollbar-width:thin}
+    table{border-collapse:collapse;width:100%;font-size:12px}
+    th{position:sticky;top:0;z-index:2;background:#4a201b;color:#e5c98d;text-transform:uppercase;letter-spacing:.06em;font-size:9px;padding:9px 6px;border-bottom:1px solid #99733a}
+    td{padding:7px 5px;border-bottom:1px solid #3f3022;text-align:right;background:#19110d}
+    tbody tr:nth-child(even) td{background:#1e1510}
+    td:first-child,th:first-child{text-align:left}
+    .resource-name{color:#dbc69b;font-weight:bold;white-space:nowrap}
+    .resource-original{display:block;color:#7f735e;font-size:9px;font-weight:normal;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+    .cell-input{width:66px;border:1px solid #625037;background:#0e0a08;color:#edd9ae;text-align:right;padding:5px 4px;outline:none}
+    .need{color:#d5b66f;font-weight:bold}.cost{color:#b7c38b}.zero{color:#6d6251}
+    .warning{margin-top:9px;padding:9px;border-left:3px solid #b38239;background:#332215;color:#d2b986;font-size:11px;display:none}
+    .warning.show{display:block}
+    .footer{display:flex;justify-content:space-between;gap:20px;margin:14px 4px;color:#8d7a5f;font-size:11px}
+    .footer a{color:#c19a53}
+    dialog{width:min(650px,calc(100% - 24px));border:1px solid #ad8440;padding:0;color:#eddbb7;background:#1c120e;box-shadow:0 25px 90px #000;outline:none}
+    dialog::backdrop{background:#090604db}
+    .dialog-head{padding:19px 20px;background:#4c211c;border-bottom:1px solid #9a7238;display:flex;justify-content:space-between;gap:20px}
+    .dialog-head h3{margin:0;font-size:21px}.dialog-close{border:0;background:none;color:#d7bd8d;font-size:25px;cursor:pointer}
+    .dialog-body{padding:20px}.details-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px}
+    .details-cell{background:#281a13;border:1px solid #4b3927;padding:10px}.details-cell span{display:block;font-size:9px;color:#958368;text-transform:uppercase}.details-cell strong{display:block;margin-top:5px}
+    .ingredients{list-style:none;margin:0;padding:0}.ingredients li{display:flex;justify-content:space-between;padding:8px 4px;border-bottom:1px solid #3e3022}
+    .toast{position:fixed;right:22px;bottom:22px;z-index:30;background:#4f211c;border:1px solid #ba8a42;color:#f0d9a5;padding:12px 16px;box-shadow:0 8px 30px #000;opacity:0;transform:translateY(15px);pointer-events:none;transition:.22s}.toast.show{opacity:1;transform:none}
+    .drop{outline:2px dashed #d1a451!important;outline-offset:-7px}
+    @media(max-width:1260px){.layout{grid-template-columns:330px 1fr}.summary-panel{grid-column:1/-1}.resource-wrap{max-height:520px}.catalog-list{height:690px}}
+    @media(max-width:780px){.shell{width:calc(100% - 14px);margin-top:7px}.topbar{grid-template-columns:1fr;padding:18px}.actions{justify-content:flex-start}.layout{grid-template-columns:1fr}.summary-panel{grid-column:auto}.catalog-list{height:420px}.set-item{grid-template-columns:1fr}.qty{grid-template-columns:32px 60px 32px 32px}.footer{flex-direction:column}.resource-wrap{max-height:520px}.panel-head{padding:16px}.panel-body{padding:10px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow" id="eyebrow">Ремесленная книга · KCD Roleplay</div>
+        <h1 id="pageTitle">Конструктор снаряжения</h1>
+        <p class="subtitle" id="pageSubtitle">Соберите заказ, посчитайте сырьё и цену каждой работы.</p>
+      </div>
+      <div class="actions">
+        <button class="btn lang" id="langBtn" title="Switch to English">EN</button>
+        <button class="btn secondary" id="loadDbBtn">База рецептов</button>
+        <button class="btn secondary" id="importBtn">Импорт сета</button>
+        <button class="btn" id="exportBtn">Экспорт сета</button>
+        <button class="btn danger" id="clearBtn">Очистить</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel catalog-panel">
+        <div class="panel-head"><h2 id="catalogTitle">Каталог ремёсел</h2><p id="catalogHint">Нажмите «+», чтобы добавить предмет в заказ.</p></div>
+        <div class="panel-body">
+          <input class="search" id="search" type="search" placeholder="Поиск предмета или ресурса…" autocomplete="off">
+          <div class="tabs" id="tabs"></div>
+          <div class="catalog-meta"><span id="catalogCount">0 рецептов</span><span id="dbStatus">встроенная база</span></div>
+          <div class="catalog-list" id="catalog"></div>
+        </div>
+      </section>
+
+      <section class="panel set-panel">
+        <div class="panel-head"><h2 id="setTitle">Ваш комплект</h2><p id="setHint">Количество — сколько готовых предметов вы хотите получить.</p></div>
+        <div class="panel-body">
+          <div class="set-toolbar"><input class="set-name" id="setName" value="Новый комплект" aria-label="Название комплекта"><button class="btn ghost" id="copyBtn">Копия JSON</button></div>
+          <div class="items" id="items"></div>
+          <p class="set-footnote" id="setFootnote">Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.</p>
+        </div>
+      </section>
+
+      <section class="panel summary-panel">
+        <div class="panel-head"><h2 id="summaryTitle">Смета мастера</h2><p id="summaryHint">Заполните запасы и цены — итог обновится сразу.</p></div>
+        <div class="panel-body">
+          <div class="metrics">
+            <div class="metric"><span id="metricItemsLabel">Предметов</span><strong id="metricItems">0</strong></div>
+            <div class="metric"><span id="metricCraftLabel">Гроши за работу</span><strong id="metricCraft">0</strong></div>
+            <div class="metric"><span id="metricResourcesLabel">Ресурсы к покупке</span><strong id="metricResources">0</strong></div>
+            <div class="metric"><span id="metricTotalLabel">Полная стоимость</span><strong id="metricTotal">0</strong></div>
+          </div>
+          <div class="resource-toolbar">
+            <label class="check"><input type="checkbox" id="showAll"> <span id="showAllLabel">Показывать ненужные ресурсы</span></label>
+            <span id="resourceCount"></span>
+          </div>
+          <div class="resource-wrap">
+            <table>
+              <thead><tr><th id="thResource">Ресурс</th><th id="thNeed">Нужно</th><th id="thOwned">Есть</th><th id="thBuy">Купить</th><th id="thPrice">Цена</th><th id="thCost">Сумма</th></tr></thead>
+              <tbody id="resources"></tbody>
+            </table>
+          </div>
+          <div class="warning" id="priceWarning"></div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><span id="footerStats"></span><span id="footerSource">Источник: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · для альтернативных рецептов компонентов используется первый вариант из базы</span></footer>
+  </div>
+
+  <dialog id="detailsDialog">
+    <div class="dialog-head"><h3 id="detailsTitle"></h3><button class="dialog-close" id="dialogClose" aria-label="Закрыть">×</button></div>
+    <div class="dialog-body" id="detailsBody"></div>
+  </dialog>
+  <input id="importFile" type="file" accept="application/json,.json" hidden>
+  <input id="dbFile" type="file" accept="application/json,.json" hidden>
+  <div class="toast" id="toast"></div>
+
+  <script id="recipeData" type="application/json">__RECIPES_JSON__</script>
+  <script>
+  (()=>{
+    'use strict';
+    const PROFESSIONS=['Все','Бронник','Портной','Кузнец','Лучное дело'];
+    const PROF_LABEL={ru:{'Все':'Все','Бронник':'Бронник','Портной':'Портной','Кузнец':'Кузнец','Лучное дело':'Лучное дело'},en:{'Все':'All','Бронник':'Armourer','Портной':'Tailor','Кузнец':'Blacksmith','Лучное дело':'Bowyer'}};
+    const I18N={
+      ru:{
+        documentTitle:'Книга ремесленника — конструктор сетов',eyebrow:'Ремесленная книга · KCD Roleplay',pageTitle:'Конструктор снаряжения',pageSubtitle:'Соберите заказ, посчитайте сырьё и цену каждой работы.',
+        loadDbBtn:'База рецептов',importBtn:'Импорт сета',exportBtn:'Экспорт сета',clearBtn:'Очистить',catalogTitle:'Каталог ремёсел',catalogHint:'Нажмите «+», чтобы добавить предмет в заказ.',searchPlaceholder:'Поиск предмета или ресурса…',builtinDb:'встроенная база',loadedDb:'загруженная база',
+        setTitle:'Ваш комплект',setHint:'Количество — сколько готовых предметов вы хотите получить.',copyBtn:'Копия JSON',setFootnote:'Партии компонентов объединяются между всеми предметами. Например, сталь сначала считается общей потребностью, а затем переводится в партии по рецепту.',summaryTitle:'Смета мастера',summaryHint:'Заполните запасы и цены — итог обновится сразу.',
+        metricItemsLabel:'Предметов',metricCraftLabel:'Гроши за работу',metricResourcesLabel:'Ресурсы к покупке',metricTotalLabel:'Полная стоимость',showAllLabel:'Показывать ненужные ресурсы',thResource:'Ресурс',thNeed:'Нужно',thOwned:'Есть',thBuy:'Купить',thPrice:'Цена',thCost:'Сумма',
+        footerSource:'Источник: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · для альтернативных рецептов компонентов используется первый вариант из базы',newSet:'Новый комплект',emptyCatalog:'Ничего не найдено',emptySetTitle:'Комплект пока пуст',emptySetHint:'Выберите предметы в каталоге слева.',noIngredients:'без сырья',levelShort:'ур.',addTitle:'Добавить',
+        willMake:'получится',fee:'плата',groschen:'гр.',resourceKinds:'видов сырья',missingPrice:'Не указана цена для {n} {word}. Итог пока неполный.',resourceOne:'ресурса',resourceMany:'ресурсов',added:'Предмет добавлен в комплект',profession:'Профессия',level:'Уровень',batchOutput:'Выход партии',craftFee:'Плата за крафт',time:'Время',type:'Тип',component:'Компонент',item:'Предмет',recipe:'Рецепт',seconds:'сек.',addToSet:'Добавить в комплект',
+        exported:'Сет экспортирован',notSetFile:'Это не файл сета.',imported:'Импортировано: {n} позиций',copied:'JSON скопирован в буфер',clipboardUnavailable:'Буфер обмена недоступен',dbUpdated:'База рецептов обновлена',clearConfirm:'Очистить предметы, цены и запасы?',close:'Закрыть',switchLanguage:'Switch to English',recipesAndResources:'{recipes} рецептов · {resources} базовых ресурсов · база {date}',invalidDb:'В файле нет recipes или base_resources.',brokenDb:'Повреждён или повторяется ключ рецепта.'
+      },
+      en:{
+        documentTitle:'Craftsman’s Ledger — Set Builder',eyebrow:'Craftsman’s ledger · KCD Roleplay',pageTitle:'Equipment Set Builder',pageSubtitle:'Assemble an order and calculate every resource and crafting fee.',
+        loadDbBtn:'Recipe database',importBtn:'Import set',exportBtn:'Export set',clearBtn:'Clear',catalogTitle:'Crafting catalogue',catalogHint:'Press “+” to add an item to the order.',searchPlaceholder:'Search items or resources…',builtinDb:'embedded database',loadedDb:'loaded database',
+        setTitle:'Your equipment set',setHint:'Quantity is the number of finished items you want.',copyBtn:'Copy JSON',setFootnote:'Component batches are combined across all items. For example, the total steel demand is calculated first and only then converted into recipe batches.',summaryTitle:'Craftsman’s estimate',summaryHint:'Enter your stock and prices — totals update instantly.',
+        metricItemsLabel:'Items',metricCraftLabel:'Crafting fees',metricResourcesLabel:'Resources to buy',metricTotalLabel:'Total cost',showAllLabel:'Show unused resources',thResource:'Resource',thNeed:'Needed',thOwned:'Owned',thBuy:'To buy',thPrice:'Price',thCost:'Cost',
+        footerSource:'Source: <a href="https://wiki.kcdroleplay.com/recipes/" target="_blank" rel="noreferrer">KCD Roleplay Wiki</a> · the first database route is used for components with alternative recipes',newSet:'New equipment set',emptyCatalog:'Nothing found',emptySetTitle:'Your set is empty',emptySetHint:'Choose items from the catalogue on the left.',noIngredients:'no resources',levelShort:'lvl.',addTitle:'Add',
+        willMake:'produces',fee:'fee',groschen:'gr.',resourceKinds:'resource types',missingPrice:'No price entered for {n} {word}. The total is incomplete.',resourceOne:'resource',resourceMany:'resources',added:'Item added to the set',profession:'Profession',level:'Level',batchOutput:'Batch output',craftFee:'Crafting fee',time:'Time',type:'Type',component:'Component',item:'Item',recipe:'Recipe',seconds:'sec.',addToSet:'Add to set',
+        exported:'Set exported',notSetFile:'This is not a set file.',imported:'Imported: {n} entries',copied:'JSON copied to clipboard',clipboardUnavailable:'Clipboard is unavailable',dbUpdated:'Recipe database updated',clearConfirm:'Clear items, prices, and stock?',close:'Close',switchLanguage:'Переключить на русский',recipesAndResources:'{recipes} recipes · {resources} base resources · database {date}',invalidDb:'The file has no recipes or base_resources.',brokenDb:'A recipe key is damaged or duplicated.'
+      }
+    };
+    const RU={
+      'Acidum chloridum':'Соляная кислота','ancient yew staves':'Древние тисовые заготовки','antlers':'Оленьи рога','boar tusks':'Кабаньи клыки','Broken axe':'Сломанный топор','coal':'Уголь','Coloured gold':'Цветное золото','copper ore':'Медная руда','Dogfish skin':'Кожа морской собаки','Dragon claw':'Коготь дракона','Enamel powder':'Эмалевая пудра','Exotic wood':'Экзотическая древесина','fine silver':'Чистое серебро','flax':'Лён','gold ore':'Золотая руда','Hare pelt':'Заячья шкура','hemp fibre':'Конопляное волокно','hides':'Шкуры','iron ore':'Железная руда','Jasper':'Яшма','logs':'Брёвна','meteoric iron':'Метеоритное железо','nettles':'Крапива','owl feathers':'Совиные перья','pine resin':'Сосновая смола','pure silver nuggets':'Самородки чистого серебра','river pearls':'Речной жемчуг','Rock Pitch':'Каменная смола','royal antlers':'Королевские рога','saltpetre':'Селитра','silver ore':'Серебряная руда','sulphur':'Сера','Tincal':'Тинкал','Weapon stub':'Оружейная заготовка','white wolf pelts':'Шкуры белого волка','wolf pelts':'Волчьи шкуры'
+    };
+    const $=id=>document.getElementById(id);
+    let lang=localStorage.getItem('kcd2-ui-lang')==='en'?'en':'ru';
+    let db=JSON.parse($('recipeData').textContent);
+    let recipes=[], recipeMap=new Map(), componentOrder=[];
+    let state={version:1,name:'Новый комплект',items:[],resources:{}};
+    let filter={profession:'Все',search:'',showAll:false};
+    let toastTimer,dbMode='builtin';
+
+    function t(key,vars={}){let text=I18N[lang][key]??key;for(const [name,value] of Object.entries(vars))text=text.replaceAll(`{${name}}`,value);return text}
+    function professionTitle(name){return PROF_LABEL[lang][name]||name}
+    function itemTitle(recipe){return lang==='ru'?(recipe.display_item_ru||recipe.display_item):recipe.display_item}
+    function ingredientTitle(ingredient){return ingredient.recipe_key&&recipeMap.has(ingredient.recipe_key)?itemTitle(recipeMap.get(ingredient.recipe_key)):resourceTitle(ingredient.name)}
+    function applyLanguage(){
+      document.documentElement.lang=lang;document.title=t('documentTitle');
+      const ids=['eyebrow','pageTitle','pageSubtitle','loadDbBtn','importBtn','exportBtn','clearBtn','catalogTitle','catalogHint','setTitle','setHint','copyBtn','setFootnote','summaryTitle','summaryHint','metricItemsLabel','metricCraftLabel','metricResourcesLabel','metricTotalLabel','showAllLabel','thResource','thNeed','thOwned','thBuy','thPrice','thCost'];
+      ids.forEach(id=>$(id).textContent=t(id));
+      $('search').placeholder=t('searchPlaceholder');$('footerSource').innerHTML=t('footerSource');$('dialogClose').title=t('close');$('dialogClose').setAttribute('aria-label',t('close'));
+      $('langBtn').textContent=lang==='ru'?'EN':'RU';$('langBtn').title=t('switchLanguage');$('dbStatus').textContent=t(dbMode==='loaded'?'loadedDb':'builtinDb');
+    }
+
+    function normalizeDb(candidate){
+      if(!candidate||!Array.isArray(candidate.recipes)||!Array.isArray(candidate.base_resources)) throw new Error(t('invalidDb'));
+      const keys=new Set();
+      for(const r of candidate.recipes){
+        if(!r.recipe_key||!r.profession||!Array.isArray(r.ingredients)||keys.has(r.recipe_key)) throw new Error(t('brokenDb'));
+        keys.add(r.recipe_key);
+      }
+      return candidate;
+    }
+
+    function prepareDb(candidate){
+      db=normalizeDb(candidate); recipes=[...db.recipes]; recipeMap=new Map(recipes.map(r=>[r.recipe_key,r]));
+      componentOrder=buildComponentOrder();
+      state.items=state.items.filter(x=>recipeMap.has(x.recipeKey));
+      applyLanguage();
+      $('footerStats').textContent=t('recipesAndResources',{recipes:recipes.length,resources:db.base_resources.length,date:new Date().toLocaleDateString(lang==='ru'?'ru-RU':'en-GB')});
+      renderTabs(); renderCatalog(); render();
+    }
+
+    function buildComponentOrder(){
+      const components=new Set(recipes.flatMap(r=>r.ingredients.map(i=>i.recipe_key).filter(Boolean)));
+      const memo=new Map();
+      const depth=key=>{
+        if(memo.has(key)) return memo.get(key);
+        const r=recipeMap.get(key); let d=0; memo.set(key,0);
+        if(r) for(const i of r.ingredients) if(i.recipe_key) d=Math.max(d,1+depth(i.recipe_key));
+        memo.set(key,d); return d;
+      };
+      return [...components].sort((a,b)=>depth(b)-depth(a));
+    }
+
+    function cleanNumber(v){const n=Number(v);return Number.isFinite(n)&&n>=0?n:0}
+    function fmt(v,digits=2){return new Intl.NumberFormat(lang==='ru'?'ru-RU':'en-US',{maximumFractionDigits:digits}).format(cleanNumber(v))}
+    function plural(n,one,few,many){n=Math.abs(n)%100;const n1=n%10;return n>10&&n<20?many:n1>1&&n1<5?few:n1===1?one:many}
+    function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+    function resourceTitle(name){return lang==='ru'?(RU[name]||name):name}
+
+    function calculate(){
+      const base=new Map(), demand=new Map(), componentRuns=new Map();
+      let craftFee=0,totalItems=0,finalRuns=0;
+      const add=(map,key,value)=>map.set(key,(map.get(key)||0)+value);
+      const feed=ingredient=>ingredient.recipe_key?add(demand,ingredient.recipe_key,ingredient.qty):add(base,ingredient.name,ingredient.qty);
+      for(const item of state.items){
+        const r=recipeMap.get(item.recipeKey); if(!r) continue;
+        const qty=Math.max(1,Math.floor(cleanNumber(item.quantity)||1));
+        const runs=Math.ceil(qty/Math.max(1,cleanNumber(r.output_qty)||1));
+        totalItems+=qty; finalRuns+=runs; craftFee+=runs*cleanNumber(r.craft_fee);
+        r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs}));
+      }
+      for(const key of componentOrder){
+        const needed=demand.get(key)||0; if(needed<=0) continue;
+        const r=recipeMap.get(key); if(!r) continue;
+        const runs=Math.ceil(needed/Math.max(1,cleanNumber(r.output_qty)||1)); componentRuns.set(key,runs);
+        craftFee+=runs*cleanNumber(r.craft_fee);
+        r.ingredients.forEach(i=>feed({...i,qty:cleanNumber(i.qty)*runs}));
+      }
+      let resourceCost=0,missingPrices=0,toBuyUnits=0;
+      const resources=db.base_resources.map(name=>{
+        const need=base.get(name)||0; const saved=state.resources[name]||{};
+        const owned=cleanNumber(saved.owned),price=cleanNumber(saved.price),buy=Math.max(need-owned,0),cost=buy*price;
+        if(buy>0&&!price) missingPrices++; resourceCost+=cost;toBuyUnits+=buy;
+        return{name,need,owned,buy,price,cost};
+      });
+      return{resources,craftFee,resourceCost,total:craftFee+resourceCost,missingPrices,totalItems,finalRuns,componentRuns,toBuyUnits};
+    }
+
+    function renderTabs(){
+      $('tabs').innerHTML=PROFESSIONS.map(p=>`<button class="tab ${filter.profession===p?'active':''}" data-profession="${esc(p)}">${esc(professionTitle(p))}</button>`).join('');
+    }
+    function renderCatalog(){
+      const q=filter.search.trim().toLocaleLowerCase('ru');
+      const list=recipes.filter(r=>(filter.profession==='Все'||r.profession===filter.profession)&&(!q||`${r.display_item} ${r.display_item_ru||''} ${r.ingredients_text} ${r.profession} ${professionTitle(r.profession)}`.toLocaleLowerCase(lang==='ru'?'ru':'en').includes(q)));
+      $('catalogCount').textContent=lang==='ru'?`${list.length} ${plural(list.length,'рецепт','рецепта','рецептов')}`:`${list.length} recipe${list.length===1?'':'s'}`;
+      $('catalog').innerHTML=list.length?list.slice(0,500).map(r=>`<article class="recipe-card"><div><div class="recipe-title" data-details="${esc(r.recipe_key)}">${esc(itemTitle(r))}${lang==='ru'?`<span class="recipe-original">${esc(r.display_item)}</span>`:''}</div><div class="recipe-sub"><span class="level">${t('levelShort')} ${fmt(r.level,0)}</span>${esc(r.ingredients_text||t('noIngredients'))}</div></div><button class="add" data-add="${esc(r.recipe_key)}" title="${t('addTitle')}">+</button></article>`).join(''):`<div class="empty"><div class="empty-mark">⌕</div>${t('emptyCatalog')}</div>`;
+    }
+    function renderItems(calc){
+      $('setName').value=state.name;
+      $('items').innerHTML=state.items.length?state.items.map(item=>{
+        const r=recipeMap.get(item.recipeKey);const qty=Math.max(1,Math.floor(cleanNumber(item.quantity)||1));const runs=Math.ceil(qty/Math.max(1,cleanNumber(r.output_qty)||1));const made=runs*Math.max(1,cleanNumber(r.output_qty)||1);
+        const craftWord=lang==='ru'?plural(runs,'крафт','крафта','крафтов'):`craft${runs===1?'':'s'}`;
+        return `<article class="set-item"><div><div class="set-item-top"><span class="profession-badge">${esc(professionTitle(r.profession))}</span><span class="set-item-name" data-details="${esc(r.recipe_key)}">${esc(itemTitle(r))}${lang==='ru'?`<span class="recipe-original">${esc(r.display_item)}</span>`:''}</span></div><div class="set-item-meta">${runs} ${craftWord} · ${t('willMake')} ${fmt(made,0)} · ${t('fee')} ${fmt(runs*cleanNumber(r.craft_fee))} ${t('groschen')} · ${esc(r.ingredients_text)}</div></div><div class="qty"><button data-dec="${esc(r.recipe_key)}">−</button><input class="number" data-qty="${esc(r.recipe_key)}" type="number" min="1" step="1" value="${qty}" aria-label="${lang==='ru'?'Количество':'Quantity'}"><button data-inc="${esc(r.recipe_key)}">+</button><button class="remove" data-remove="${esc(r.recipe_key)}" title="${lang==='ru'?'Удалить':'Remove'}">×</button></div></article>`;
+      }).join(''):`<div class="empty"><div class="empty-mark">⚒</div><strong>${t('emptySetTitle')}</strong><br><br>${t('emptySetHint')}</div>`;
+    }
+    function renderResources(calc){
+      const visible=calc.resources.filter(r=>filter.showAll||r.need>0);
+      $('resourceCount').textContent=`${visible.filter(r=>r.need>0).length} ${t('resourceKinds')}`;
+      $('resources').innerHTML=visible.map(r=>`<tr><td><span class="resource-name">${esc(resourceTitle(r.name))}</span>${resourceTitle(r.name)!==r.name?`<span class="resource-original">${esc(r.name)}</span>`:''}</td><td class="${r.need?'need':'zero'}">${fmt(r.need)}</td><td><input class="cell-input" type="number" min="0" step="any" data-owned="${esc(r.name)}" value="${r.owned||''}" placeholder="0"></td><td class="${r.buy?'':'zero'}">${fmt(r.buy)}</td><td><input class="cell-input" type="number" min="0" step="any" data-price="${esc(r.name)}" value="${r.price||''}" placeholder="0"></td><td class="${r.cost?'cost':'zero'}">${fmt(r.cost)}</td></tr>`).join('');
+      $('metricItems').textContent=fmt(calc.totalItems,0);
+      $('metricCraft').textContent=`${fmt(calc.craftFee)} ${t('groschen')}`;
+      $('metricResources').textContent=fmt(calc.toBuyUnits);
+      $('metricTotal').textContent=calc.missingPrices?`${fmt(calc.total)}+ ${t('groschen')}`:`${fmt(calc.total)} ${t('groschen')}`;
+      $('priceWarning').classList.toggle('show',calc.missingPrices>0);
+      $('priceWarning').textContent=calc.missingPrices?t('missingPrice',{n:calc.missingPrices,word:calc.missingPrices===1?t('resourceOne'):t('resourceMany')}):'';
+    }
+    function render(){const calc=calculate();renderItems(calc);renderResources(calc);saveLocal()}
+
+    function addItem(key){
+      const found=state.items.find(x=>x.recipeKey===key);found?found.quantity++:state.items.push({recipeKey:key,quantity:1});render();toast(t('added'));
+    }
+    function changeQty(key,delta,value){
+      const item=state.items.find(x=>x.recipeKey===key);if(!item)return;
+      item.quantity=value!==undefined?Math.max(1,Math.floor(cleanNumber(value)||1)):Math.max(1,item.quantity+delta);render();
+    }
+    function removeItem(key){state.items=state.items.filter(x=>x.recipeKey!==key);render()}
+    function showDetails(key){
+      const r=recipeMap.get(key);if(!r)return;$('detailsTitle').innerHTML=`${esc(itemTitle(r))}${lang==='ru'?`<span class="recipe-original">${esc(r.display_item)}</span>`:''}`;
+      $('detailsBody').innerHTML=`<div class="details-grid"><div class="details-cell"><span>${t('profession')}</span><strong>${esc(professionTitle(r.profession))}</strong></div><div class="details-cell"><span>${t('level')}</span><strong>${fmt(r.level,0)}</strong></div><div class="details-cell"><span>${t('batchOutput')}</span><strong>${fmt(r.output_qty,0)}</strong></div><div class="details-cell"><span>${t('craftFee')}</span><strong>${fmt(r.craft_fee)} ${t('groschen')}</strong></div><div class="details-cell"><span>${t('time')}</span><strong>${r.time_seconds?fmt(r.time_seconds,0)+' '+t('seconds'):'—'}</strong></div><div class="details-cell"><span>${t('type')}</span><strong>${r.is_part?t('component'):t('item')}</strong></div></div><h4>${t('recipe')}</h4><ul class="ingredients">${r.ingredients.map(i=>`<li><span>${esc(ingredientTitle(i))}${i.recipe_key?' · '+t('component').toLocaleLowerCase(lang==='ru'?'ru':'en'):''}</span><strong>${fmt(i.qty)}</strong></li>`).join('')}</ul><br><button class="btn" data-dialog-add="${esc(r.recipe_key)}">${t('addToSet')}</button>`;
+      $('detailsDialog').showModal();
+    }
+    function serializable(){
+      const used={};for(const [name,v] of Object.entries(state.resources))if(cleanNumber(v.owned)||cleanNumber(v.price))used[name]={owned:cleanNumber(v.owned),price:cleanNumber(v.price)};
+      return{format:'kcd2-crafting-set',version:1,name:state.name||'Новый комплект',exportedAt:new Date().toISOString(),items:state.items.map(x=>({recipeKey:x.recipeKey,quantity:Math.max(1,Math.floor(cleanNumber(x.quantity)||1))})),resources:used};
+    }
+    function download(name,text,type='application/json'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},100)}
+    function exportSet(){const data=serializable();const safe=(data.name||'set').replace(/[\\/:*?"<>|]+/g,'-').slice(0,80);download(`${safe}.json`,JSON.stringify(data,null,2));toast(t('exported'))}
+    async function importSet(file){
+      const incoming=JSON.parse(await file.text());if(!incoming||!Array.isArray(incoming.items))throw new Error(t('notSetFile'));
+      const items=incoming.items.filter(x=>recipeMap.has(x.recipeKey)).map(x=>({recipeKey:x.recipeKey,quantity:Math.max(1,Math.floor(cleanNumber(x.quantity)||1))}));
+      state={version:1,name:String(incoming.name||file.name.replace(/\.json$/i,'')),items,resources:incoming.resources&&typeof incoming.resources==='object'?incoming.resources:{}};render();toast(t('imported',{n:items.length}));
+    }
+    async function copyJson(){await navigator.clipboard.writeText(JSON.stringify(serializable(),null,2));toast(t('copied'))}
+    function saveLocal(){try{localStorage.setItem('kcd2-set-builder-state',JSON.stringify(serializable()))}catch(e){}}
+    function restoreLocal(){try{const x=JSON.parse(localStorage.getItem('kcd2-set-builder-state'));if(x&&Array.isArray(x.items))state={version:1,name:x.name||'Новый комплект',items:x.items,resources:x.resources||{}}}catch(e){}}
+    function toast(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').classList.add('show');toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2200)}
+
+    $('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-profession]');if(!b)return;filter.profession=b.dataset.profession;renderTabs();renderCatalog()});
+    $('search').addEventListener('input',e=>{filter.search=e.target.value;renderCatalog()});
+    $('catalog').addEventListener('click',e=>{const a=e.target.closest('[data-add]'),d=e.target.closest('[data-details]');if(a)addItem(a.dataset.add);else if(d)showDetails(d.dataset.details)});
+    $('items').addEventListener('click',e=>{const inc=e.target.closest('[data-inc]'),dec=e.target.closest('[data-dec]'),rm=e.target.closest('[data-remove]'),d=e.target.closest('[data-details]');if(inc)changeQty(inc.dataset.inc,1);else if(dec)changeQty(dec.dataset.dec,-1);else if(rm)removeItem(rm.dataset.remove);else if(d)showDetails(d.dataset.details)});
+    $('items').addEventListener('change',e=>{if(e.target.matches('[data-qty]'))changeQty(e.target.dataset.qty,0,e.target.value)});
+    $('resources').addEventListener('change',e=>{const name=e.target.dataset.owned??e.target.dataset.price;if(name===undefined)return;state.resources[name]=state.resources[name]||{};if(e.target.dataset.owned!==undefined)state.resources[name].owned=cleanNumber(e.target.value);else state.resources[name].price=cleanNumber(e.target.value);render()});
+    $('setName').addEventListener('input',e=>{state.name=e.target.value;saveLocal()});
+    $('showAll').addEventListener('change',e=>{filter.showAll=e.target.checked;render()});
+    $('langBtn').addEventListener('click',()=>{const oldDefault=state.name===I18N[lang].newSet;lang=lang==='ru'?'en':'ru';localStorage.setItem('kcd2-ui-lang',lang);if(oldDefault)state.name=t('newSet');prepareDb(db)});
+    $('exportBtn').addEventListener('click',exportSet);$('copyBtn').addEventListener('click',()=>copyJson().catch(()=>toast(t('clipboardUnavailable'))));
+    $('importBtn').addEventListener('click',()=>$('importFile').click());
+    $('importFile').addEventListener('change',e=>{if(e.target.files[0])importSet(e.target.files[0]).catch(err=>alert(err.message));e.target.value=''});
+    $('loadDbBtn').addEventListener('click',()=>$('dbFile').click());
+    $('dbFile').addEventListener('change',async e=>{try{if(!e.target.files[0])return;dbMode='loaded';prepareDb(JSON.parse(await e.target.files[0].text()));toast(t('dbUpdated'))}catch(err){alert(err.message)}finally{e.target.value=''}});
+    $('clearBtn').addEventListener('click',()=>{if(confirm(t('clearConfirm'))){state={version:1,name:t('newSet'),items:[],resources:{}};render()}});
+    $('dialogClose').addEventListener('click',()=>$('detailsDialog').close());
+    $('detailsBody').addEventListener('click',e=>{const b=e.target.closest('[data-dialog-add]');if(b){addItem(b.dataset.dialogAdd);$('detailsDialog').close()}});
+    document.addEventListener('dragover',e=>{if([...e.dataTransfer.types].includes('Files')){e.preventDefault();document.body.classList.add('drop')}});
+    document.addEventListener('dragleave',()=>document.body.classList.remove('drop'));
+    document.addEventListener('drop',e=>{e.preventDefault();document.body.classList.remove('drop');const f=e.dataTransfer.files[0];if(f?.name.endsWith('.json'))importSet(f).catch(err=>alert(err.message))});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('detailsDialog').open)$('detailsDialog').close()});
+
+    restoreLocal();if(lang==='en'&&state.name==='Новый комплект')state.name=t('newSet');prepareDb(db);
+  })();
+  </script>
+</body>
+</html>
