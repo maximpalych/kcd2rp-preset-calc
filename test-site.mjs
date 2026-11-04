@@ -14,7 +14,7 @@ const match=html.match(/<script id="recipeData" type="application\/json">([\s\S]
 if(!match)throw new Error('Embedded recipe database missing');
 const embedded=JSON.parse(match[1]);
 if(embedded.recipes.length!==db.recipes.length)throw new Error('Embedded and external databases differ');
-for(const needle of ['function calculate()','function exportSet()','async function importSet','const I18N=','id="langBtn"','function applyLanguage()','professionTitle','data-owned','data-price','Кузнец','Лучное дело','Equipment Set Builder','Конструктор снаряжения'])if(!html.includes(needle))throw new Error(`Missing feature: ${needle}`);
+for(const needle of ['function calculate()','function exportSet()','async function importSet','const I18N=','id="langBtn"','function applyLanguage()','function matchesSearch(','professionTitle','data-owned','data-price','Кузнец','Лучное дело','Equipment Set Builder','Конструктор снаряжения'])if(!html.includes(needle))throw new Error(`Missing feature: ${needle}`);
 
 const recipeMap=new Map(db.recipes.map(r=>[r.recipe_key,r]));
 const steel=recipeMap.get('Кузнец|steel');

@@ -287,9 +287,20 @@
     function renderTabs(){
       $('tabs').innerHTML=PROFESSIONS.map(p=>`<button class="tab ${filter.profession===p?'active':''}" data-profession="${esc(p)}">${esc(professionTitle(p))}</button>`).join('');
     }
+    function normalizeSearch(value){
+      return String(value||'').toLocaleLowerCase(lang==='ru'?'ru':'en').replaceAll('ё','е').trim();
+    }
+    function matchesSearch(haystack,query){
+      const hay=normalizeSearch(haystack);
+      const terms=normalizeSearch(query).split(/\s+/).filter(Boolean);
+      return terms.every(term=>{
+        const stem=lang==='ru'&&term.length>5?term.slice(0,-2):term;
+        return hay.includes(term)||hay.includes(stem);
+      });
+    }
     function renderCatalog(){
-      const q=filter.search.trim().toLocaleLowerCase('ru');
-      const list=recipes.filter(r=>(filter.profession==='Все'||r.profession===filter.profession)&&(!q||`${r.display_item} ${r.display_item_ru||''} ${r.ingredients_text} ${r.profession} ${professionTitle(r.profession)}`.toLocaleLowerCase(lang==='ru'?'ru':'en').includes(q)));
+      const q=filter.search.trim();
+      const list=recipes.filter(r=>(filter.profession==='Все'||r.profession===filter.profession)&&(!q||matchesSearch(`${r.display_item} ${r.display_item_ru||''} ${r.ingredients_text} ${r.profession} ${professionTitle(r.profession)}`,q)));
       $('catalogCount').textContent=lang==='ru'?`${list.length} ${plural(list.length,'рецепт','рецепта','рецептов')}`:`${list.length} recipe${list.length===1?'':'s'}`;
       $('catalog').innerHTML=list.length?list.slice(0,500).map(r=>`<article class="recipe-card"><div><div class="recipe-title" data-details="${esc(r.recipe_key)}">${esc(itemTitle(r))}${lang==='ru'?`<span class="recipe-original">${esc(r.display_item)}</span>`:''}</div><div class="recipe-sub"><span class="level">${t('levelShort')} ${fmt(r.level,0)}</span>${esc(r.ingredients_text||t('noIngredients'))}</div></div><button class="add" data-add="${esc(r.recipe_key)}" title="${t('addTitle')}">+</button></article>`).join(''):`<div class="empty"><div class="empty-mark">⌕</div>${t('emptyCatalog')}</div>`;
     }
