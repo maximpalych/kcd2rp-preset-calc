@@ -54,6 +54,11 @@ const oldPlateLegs=[...recipeMap.values()].find(r=>r.display_item==='Old brigand
 if(!oldPlateLegs||oldPlateLegs.display_item_ru!=='Старые пластинчатые поножи')throw new Error('Old plate legs translation is missing');
 const aventailNames=['Простая бармица','Усиленная бармица','Бармица со значком','Бацинет с бармицей (тяжёлый)','Бацинет с бармицей'];
 for(const name of aventailNames)if(![...recipeMap.values()].some(r=>r.display_item_ru===name))throw new Error(`Aventail translation is missing: ${name}`);
+for(const variant of [1,2,3]){
+  const name=`padding [рецепт ${variant}]`;
+  const recipe=[...recipeMap.values()].find(r=>r.display_item===name);
+  if(!recipe||recipe.display_item_ru!==`Набивка [рецепт ${variant}]`)throw new Error(`Padding translation is missing: ${name}`);
+}
 const one=calculate([{recipeKey:coif.recipe_key,quantity:1}]);
 const two=calculate([{recipeKey:coif.recipe_key,quantity:2}]);
 const expectedOne={coal:12,'iron ore':9,nettles:3,hides:1};
