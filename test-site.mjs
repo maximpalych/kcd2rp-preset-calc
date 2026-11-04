@@ -60,6 +60,8 @@ const blackCoif=coifRecipes.find(r=>r.display_item==='Broad battle coif - black'
 if(!blackCoif||blackCoif.display_item_ru!=='Чёрный широкий боевой койф')throw new Error('Black coif translation is missing');
 const leafCouters=[...recipeMap.values()].find(r=>r.display_item==='Leaf-shaped couters');
 if(!leafCouters||leafCouters.display_item_ru!=='Наколенники в форме листьев')throw new Error('Leaf-shaped couters translation is missing');
+const nobleGauntlets=[...recipeMap.values()].find(r=>r.display_item==="Noble's gauntlets");
+if(!nobleGauntlets||nobleGauntlets.display_item_ru!=='Панские латные перчатки')throw new Error('Noble gauntlets translation is missing');
 for(const variant of [1,2,3]){
   const name=`padding [рецепт ${variant}]`;
   const recipe=[...recipeMap.values()].find(r=>r.display_item===name);
