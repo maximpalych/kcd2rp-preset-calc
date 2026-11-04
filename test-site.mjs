@@ -15,7 +15,7 @@ if(!match)throw new Error('Embedded recipe database missing');
 const embedded=JSON.parse(match[1]);
 if(embedded.recipes.length!==db.recipes.length)throw new Error('Embedded and external databases differ');
 if(html.includes('.replaceAll('))throw new Error('Unsupported replaceAll remains in the page');
-for(const needle of ['function calculate()','function exportSet()','async function importSet','const I18N=','id="langBtn"','id="craftLevels"','id="components"','id="rawMaterialsTitle"','componentStateKey','shortage=Math.max(needed-owned,0)','requiredCraftLevels','requiredLevels=new Map()','function applyLanguage()','function matchesSearch(','professionTitle','data-owned','data-price','Кузнец','Лучное дело','Equipment Set Builder','Конструктор снаряжения'])if(!html.includes(needle))throw new Error(`Missing feature: ${needle}`);
+for(const needle of ['function calculate()','function exportSet()','async function importSet','const I18N=','id="langBtn"','id="craftLevels"','id="setCount"','id="components"','id="rawMaterialsTitle"','componentStateKey','shortage=Math.max(needed-owned,0)','setCount:Math.max(1','requiredCraftLevels','requiredLevels=new Map()','function applyLanguage()','function matchesSearch(','professionTitle','data-owned','data-price','Кузнец','Лучное дело','Equipment Set Builder','Конструктор снаряжения'])if(!html.includes(needle))throw new Error(`Missing feature: ${needle}`);
 
 const recipeMap=new Map(db.recipes.map(r=>[r.recipe_key,r]));
 for(const needle of ['function buildMarkdownReport()','id="copyReportBtn"','componentDemand:demand','baseBreakdown'])if(!html.includes(needle))throw new Error('Markdown report feature is missing');
@@ -24,7 +24,7 @@ if(!steel||steel.output_qty!==2)throw new Error('Steel route missing');
 const steelIngredients=Object.fromEntries(steel.ingredients.map(i=>[i.name,i.qty]));
 if(steelIngredients['iron ore']!==3||steelIngredients.coal!==2)throw new Error('Steel recipe mismatch');
 
-function calculate(items,owned={}){
+function calculate(items,owned={},setCount=1){
   const components=new Set(db.recipes.flatMap(r=>r.ingredients.map(i=>i.recipe_key).filter(Boolean)));
   const memo=new Map();
   const depth=key=>{
@@ -37,7 +37,7 @@ function calculate(items,owned={}){
   const demand=new Map(),base=new Map(),componentDemand={};let fee=0;
   const add=(map,key,value)=>map.set(key,(map.get(key)||0)+value);
   const feed=(i,multiplier)=>i.recipe_key?add(demand,i.recipe_key,i.qty*multiplier):add(base,i.name,i.qty*multiplier);
-  for(const item of items){const r=recipeMap.get(item.recipeKey);const runs=Math.ceil(item.quantity/r.output_qty);fee+=runs*r.craft_fee;r.ingredients.forEach(i=>feed(i,runs));}
+  for(const item of items){const r=recipeMap.get(item.recipeKey);const runs=Math.ceil(item.quantity*setCount/r.output_qty);fee+=runs*r.craft_fee;r.ingredients.forEach(i=>feed(i,runs));}
   for(const key of order){const need=demand.get(key)||0;if(!need)continue;componentDemand[key]=need;const r=recipeMap.get(key);const shortage=Math.max(need-(owned[key]||0),0);const runs=shortage?Math.ceil(shortage/r.output_qty):0;fee+=runs*r.craft_fee;r.ingredients.forEach(i=>feed(i,runs));}
   return{base:Object.fromEntries(base),fee,componentDemand};
 }
@@ -62,6 +62,7 @@ for(const variant of [1,2,3]){
 const one=calculate([{recipeKey:coif.recipe_key,quantity:1}]);
 const two=calculate([{recipeKey:coif.recipe_key,quantity:2}]);
 const stocked=calculate([{recipeKey:coif.recipe_key,quantity:1}],{'Кузнец|steel':5,'Портной|padding [рецепт 1]':2});
+const tenSets=calculate([{recipeKey:coif.recipe_key,quantity:1}],{},10);
 const expectedOne={coal:12,'iron ore':9,nettles:3,hides:1};
 const expectedTwo={coal:24,'iron ore':18,nettles:3,hides:1};
 for(const [key,value] of Object.entries(expectedOne))if(one.base[key]!==value)throw new Error(`One-item calculation mismatch for ${key}`);
@@ -70,8 +71,11 @@ if(one.fee!==10||two.fee!==20)throw new Error('Craft fee calculation mismatch');
 if(stocked.componentDemand['Кузнец|steel']!==6||stocked.componentDemand['Портной|padding [рецепт 1]']!==1)throw new Error('Gross component demand was lost');
 if(stocked.base.coal!==8||stocked.base['iron ore']!==3||stocked.base.nettles||stocked.base.hides)throw new Error('Intermediate stock was not deducted before raw-material expansion');
 if(stocked.fee!==10)throw new Error('Stocked component fee calculation mismatch');
+const expectedTenSets={coal:120,'iron ore':90,nettles:15,hides:3};
+for(const [key,value] of Object.entries(expectedTenSets))if(tenSets.base[key]!==value)throw new Error(`Set multiplier mismatch for ${key}`);
+if(tenSets.componentDemand['Кузнец|steel']!==60||tenSets.componentDemand['Портной|padding [рецепт 1]']!==10||tenSets.fee!==100)throw new Error('Set multiplier did not scale components or fees');
 
 const scriptBlocks=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
 const appScript=scriptBlocks.at(-1);
 new vm.Script(appScript,{filename:'site-inline.js'});
-console.log(JSON.stringify({recipes:db.recipes.length,russianItemNames:db.recipes.length-missingRussian.length,resources:db.base_resources.length,professions:[...new Set(db.recipes.map(r=>r.profession))],languages:['ru','en'],steel:steelIngredients,oneItem:one,twoItems:two,stockedComponents:stocked,htmlSyntax:'ok',embeddedDatabase:'ok'},null,2));
+console.log(JSON.stringify({recipes:db.recipes.length,russianItemNames:db.recipes.length-missingRussian.length,resources:db.base_resources.length,professions:[...new Set(db.recipes.map(r=>r.profession))],languages:['ru','en'],steel:steelIngredients,oneItem:one,twoItems:two,stockedComponents:stocked,tenSets,htmlSyntax:'ok',embeddedDatabase:'ok'},null,2));
