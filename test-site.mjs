@@ -54,6 +54,10 @@ const oldPlateLegs=[...recipeMap.values()].find(r=>r.display_item==='Old brigand
 if(!oldPlateLegs||oldPlateLegs.display_item_ru!=='Старые пластинчатые поножи')throw new Error('Old plate legs translation is missing');
 const aventailNames=['Простая бармица','Усиленная бармица','Бармица со значком','Бацинет с бармицей (тяжёлый)','Бацинет с бармицей'];
 for(const name of aventailNames)if(![...recipeMap.values()].some(r=>r.display_item_ru===name))throw new Error(`Aventail translation is missing: ${name}`);
+const coifRecipes=[...recipeMap.values()].filter(r=>/coif/i.test(r.display_item));
+if(!coifRecipes.length||coifRecipes.some(r=>!/койф/i.test(r.display_item_ru)))throw new Error('Not every coif uses the Russian “койф” name');
+const blackCoif=coifRecipes.find(r=>r.display_item==='Broad battle coif - black');
+if(!blackCoif||blackCoif.display_item_ru!=='Чёрный широкий боевой койф')throw new Error('Black coif translation is missing');
 for(const variant of [1,2,3]){
   const name=`padding [рецепт ${variant}]`;
   const recipe=[...recipeMap.values()].find(r=>r.display_item===name);

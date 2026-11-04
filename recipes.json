@@ -6893,7 +6893,7 @@
       "display_item": "Brunswick's chainmail coif",
       "recipe_key": "Бронник|Brunswick's chainmail coif",
       "item_norm": "brunswick's chainmail coif",
-      "display_item_ru": "Кольчуга Брансуика"
+      "display_item_ru": "Кольчужный койф Брансуика"
     },
     {
       "profession": "Бронник",
@@ -12920,7 +12920,7 @@
       "display_item": "Coif",
       "recipe_key": "Портной|Coif",
       "item_norm": "coif",
-      "display_item_ru": "Причёска"
+      "display_item_ru": "Койф"
     },
     {
       "profession": "Портной",
@@ -13145,7 +13145,7 @@
       "display_item": "Crude padded coif",
       "recipe_key": "Портной|Crude padded coif",
       "item_norm": "crude padded coif",
-      "display_item_ru": "Грубый мягкий чепец"
+      "display_item_ru": "Грубый набивной койф"
     },
     {
       "profession": "Портной",
@@ -13395,7 +13395,7 @@
       "display_item": "Padded coif (plain)",
       "recipe_key": "Портной|Padded coif (plain)",
       "item_norm": "padded coif (plain)",
-      "display_item_ru": "Мягкий чепчик (однотонный)"
+      "display_item_ru": "Простой набивной койф"
     },
     {
       "profession": "Портной",
@@ -13557,7 +13557,7 @@
       "display_item": "Padded coif - black (plain)",
       "recipe_key": "Портной|Padded coif - black (plain)",
       "item_norm": "padded coif - black (plain)",
-      "display_item_ru": "Набивной чепчик - черный (однотонный)"
+      "display_item_ru": "Чёрный набивной койф (простой)"
     },
     {
       "profession": "Портной",
@@ -16227,7 +16227,7 @@
       "display_item": "Padded coif (reinforced)",
       "recipe_key": "Портной|Padded coif (reinforced)",
       "item_norm": "padded coif (reinforced)",
-      "display_item_ru": "Мягкий чепчик (усиленный)"
+      "display_item_ru": "Усиленный набивной койф"
     },
     {
       "profession": "Портной",
@@ -16351,7 +16351,7 @@
       "display_item": "Padded coif - black (reinforced)",
       "recipe_key": "Портной|Padded coif - black (reinforced)",
       "item_norm": "padded coif - black (reinforced)",
-      "display_item_ru": "Набивной чепчик - черный (усиленный)"
+      "display_item_ru": "Чёрный набивной койф (усиленный)"
     },
     {
       "profession": "Портной",
@@ -18631,7 +18631,7 @@
       "display_item": "Broad battle coif",
       "recipe_key": "Портной|Broad battle coif",
       "item_norm": "broad battle coif",
-      "display_item_ru": "Широкая боевая прическа"
+      "display_item_ru": "Широкий боевой койф"
     },
     {
       "profession": "Портной",
@@ -18656,7 +18656,7 @@
       "display_item": "Tournament padded coif",
       "recipe_key": "Портной|Tournament padded coif",
       "item_norm": "tournament padded coif",
-      "display_item_ru": "Чепчик Tournament с мягкой подкладкой"
+      "display_item_ru": "Турнирный набивной койф"
     },
     {
       "profession": "Портной",
@@ -18681,7 +18681,7 @@
       "display_item": "Broad battle coif (style 2)",
       "recipe_key": "Портной|Broad battle coif (style 2)",
       "item_norm": "broad battle coif (style 2)",
-      "display_item_ru": "Широкая боевая прическа (стиль 2)"
+      "display_item_ru": "Широкий боевой койф (стиль 2)"
     },
     {
       "profession": "Портной",
@@ -18706,7 +18706,7 @@
       "display_item": "Broad battle coif (style 3)",
       "recipe_key": "Портной|Broad battle coif (style 3)",
       "item_norm": "broad battle coif (style 3)",
-      "display_item_ru": "Широкая боевая прическа (стиль 3)"
+      "display_item_ru": "Широкий боевой койф (стиль 3)"
     },
     {
       "profession": "Портной",
@@ -18731,7 +18731,7 @@
       "display_item": "Broad battle coif (style 4)",
       "recipe_key": "Портной|Broad battle coif (style 4)",
       "item_norm": "broad battle coif (style 4)",
-      "display_item_ru": "Широкая боевая прическа (стиль 4)"
+      "display_item_ru": "Широкий боевой койф (стиль 4)"
     },
     {
       "profession": "Портной",
@@ -18756,7 +18756,7 @@
       "display_item": "Broad battle coif (style 5)",
       "recipe_key": "Портной|Broad battle coif (style 5)",
       "item_norm": "broad battle coif (style 5)",
-      "display_item_ru": "Широкая боевая прическа (стиль 5)"
+      "display_item_ru": "Широкий боевой койф (стиль 5)"
     },
     {
       "profession": "Портной",
@@ -18781,7 +18781,7 @@
       "display_item": "Broad battle coif (style 6)",
       "recipe_key": "Портной|Broad battle coif (style 6)",
       "item_norm": "broad battle coif (style 6)",
-      "display_item_ru": "Широкая боевая прическа (стиль 6)"
+      "display_item_ru": "Широкий боевой койф (стиль 6)"
     },
     {
       "profession": "Портной",
@@ -18806,7 +18806,7 @@
       "display_item": "Broad battle coif (style 7)",
       "recipe_key": "Портной|Broad battle coif (style 7)",
       "item_norm": "broad battle coif (style 7)",
-      "display_item_ru": "Широкая боевая прическа (стиль 7)"
+      "display_item_ru": "Широкий боевой койф (стиль 7)"
     },
     {
       "profession": "Портной",
@@ -18831,7 +18831,7 @@
       "display_item": "Broad battle coif (style 8)",
       "recipe_key": "Портной|Broad battle coif (style 8)",
       "item_norm": "broad battle coif (style 8)",
-      "display_item_ru": "Широкая боевая прическа (стиль 8)"
+      "display_item_ru": "Широкий боевой койф (стиль 8)"
     },
     {
       "profession": "Портной",
@@ -19847,7 +19847,7 @@
       "display_item": "Broad battle coif - black",
       "recipe_key": "Портной|Broad battle coif - black",
       "item_norm": "broad battle coif - black",
-      "display_item_ru": "Широкий боевой чепец - черный"
+      "display_item_ru": "Чёрный широкий боевой койф"
     },
     {
       "profession": "Портной",
